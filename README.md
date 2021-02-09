@@ -1,2 +1,2 @@
-# Disaster-Management-System
+# Disaster Management aSystem
 MERN based web app for disaster managment
