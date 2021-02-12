@@ -1,0 +1,44 @@
+{
+  "name": "dams-server-side",
+  "version": "1.0.0",
+  "description": "Code for NodeJS based Backend for Disaster Management Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asad1996172/Disaster-Management-System"
+  },
+  "author": "Asad Mahmood, Dennis Kurtz and Stegan Radovic",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/asad1996172/Disaster-Management-System/issues"
+  },
+  "homepage": "https://github.com/asad1996172/Disaster-Management-System#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.3",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.9.2",
+    "gravatar": "^1.8.1",
+    "http-errors": "^1.8.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.11.15",
+    "request": "^2.88.2",
+    "superagent": "^6.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "eslint": "^7.19.0",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7"
+  }
+}
