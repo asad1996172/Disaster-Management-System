@@ -35,7 +35,7 @@ jobs:
           pip install -r requirements.txt
       - name: Pylint 
         run: |
-          pylint --load-plugins=pylint_django DAMS/*.py
+          pylint --load-plugins=pylint_django DAMS/*.py --path ./src --threshold 2
       - name: Test 
         run: |
           pytest
