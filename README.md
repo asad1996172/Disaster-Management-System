@@ -53,12 +53,13 @@ pip install -r requirements.txt
 Install mongodb
 ```
 https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/ (For mac)
+https://www.mongodb.com/try/download/community?tck=docs_server (for windows)
 ```
 Install MongoDB compass for managing MongoDB
 ```
 https://www.mongodb.com/products/compass
 ```
-
+>> MongoDB compass will automatically be installed in the windows installation
 ### Running Server
 Make db migrations
 ```
