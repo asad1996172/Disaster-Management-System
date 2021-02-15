@@ -59,7 +59,7 @@ Install MongoDB compass for managing MongoDB
 ```
 https://www.mongodb.com/products/compass
 ```
->> MongoDB compass will automatically be installed in the windows installation
+> MongoDB compass will automatically be installed in the windows installation
 ### Running Server
 Make db migrations
 ```
