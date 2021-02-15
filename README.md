@@ -18,7 +18,8 @@ Python Django based web application with MondoDB for Disaster Assistance Managem
 
 ## Getting Started
 
-### Setting up Pyhton and Virtual Environment 
+### Setting up Python and Virtual Environment 
+> Be sure to have Python 3.7+ installed
 Clone this repository
 ```sh
 git clone https://github.com/asad1996172/Disaster-Management-System
