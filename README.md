@@ -38,7 +38,7 @@ virtualenv -p python3 env
 ```
 Activate virtual environment 
 ```
-source env/bin.activate (For Mac)
+source env/bin/activate (For Mac)
 env\scripts\activate (For Windows)
 ```
 Check virtual environment 
