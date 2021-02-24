@@ -7,7 +7,7 @@ const app = express();
 connectDB(); 
 
 app.get('/', (req, res)=>{
-    res.send('API Running');
+    res.json({ status: 'API Running'});
 });
 
 const PORT = process.env.PORT || 5000; // look for default port else set to 5000 for local
