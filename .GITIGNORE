@@ -1,0 +1,10 @@
+# Server side exclusions
+/server/node_modules
+/server/package-lock.json
+
+# Cliend side exclutions
+/client/env
+/client/__pycache__
+/client/.pytest_cache
+/client/.coverage
+/client/app/__pycache__
