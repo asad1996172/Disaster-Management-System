@@ -22,6 +22,12 @@ Python Django based web application with MondoDB for Disaster Assistance Managem
 1) Install NodeJS
 2) Install XAMPP: https://sourceforge.net/projects/xampp/files/XAMPP%20Mac%20OS%20X/8.0.2/
 3) Run mysql server and apache server from Xampp Control Manager
+4) npm install
+5) npm run server
+6) npm run test
+
+6) python app.py
+7) pytest --cov=app --cov-report=html:coverage
 
 
 ### Setting up Python and Virtual Environment 
