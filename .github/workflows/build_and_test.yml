@@ -13,14 +13,19 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: cd server/
-      - run: pwd
+      - name: Install node dependencies
+        working-directory: ./server
+        run: npm install
+      - name: Run Node tests
+        working-directory: ./server
+        run: npm run test
+
       
   build_client:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7]
+        python-version: [3.6]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
