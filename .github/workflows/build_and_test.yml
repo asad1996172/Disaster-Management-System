@@ -19,6 +19,10 @@ jobs:
       - name: Run Node tests
         working-directory: ./server
         run: npm run test
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+      - name: Run Node Server
+        run: npm run server
 
       
   build_client:
