@@ -30,7 +30,7 @@ git clone https://github.com/asad1996172/Disaster-Management-System
 6) Run ```npm run test``` to run tests and generate coverage report
 
 ### Setting up Client-side
-1) Go to client directory and create virtualenv using Python 3.6.5 ```virtualenv -p pythonm3 env```
+1) Go to client directory and create virtualenv using Python 3.6.5 ```virtualenv -p python3 env```
 2) Activate virtual environment ```source env/bin/activate```
 3) Install required python libraries ```pip install -r requirements.txt```
 4) Run client server ```python app.py```
