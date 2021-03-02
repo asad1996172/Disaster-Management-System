@@ -31,7 +31,7 @@ git clone https://github.com/asad1996172/Disaster-Management-System
 
 ### Setting up Client-side
 1) Go to client directory and create virtualenv using Python 3.6.5 ```virtualenv -p python3 env```
-2) Activate virtual environment ```source env/bin/activate```
+2) Activate virtual environment ```source env/bin/activate``` For Mac and ```.\env\Scripts\activate``` For Windows
 3) Install required python libraries ```pip install -r requirements.txt```
 4) Run client server ```python app.py```
 7) Run python tests and generate coverage report ```pytest --cov=app --cov-report=html:coverage```
