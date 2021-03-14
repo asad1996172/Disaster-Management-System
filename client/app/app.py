@@ -1,9 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect
 import requests
 import json
 
 app = Flask(__name__)
 
+
+@app.route('/admin_login', methods=['POST', 'GET'])
+def admin_login():
+    if request.method == 'POST':
+        pass
+    else:
+        return render_template('login.html')
+    
 
 @app.route('/')
 def dams_homepage():
