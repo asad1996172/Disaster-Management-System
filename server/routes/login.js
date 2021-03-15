@@ -22,6 +22,8 @@ router.post("/login", async (req, res) => {
   const payload = {
       user: {
         id: userWithEmail.id,
+        name: userWithEmail.fullName,
+        zipcode: userWithEmail.zipcode,
         email: userWithEmail.email,
         role: userWithEmail.role
       },
@@ -31,7 +33,7 @@ router.post("/login", async (req, res) => {
     process.env.JWT_TOKEN
   );
 
-  res.json({ message: "Welcome Back!", token: jwtToken });
+  res.json({ message: "Welcome Back!", token: jwtToken, payload: payload });
 });
 
 module.exports = router;
