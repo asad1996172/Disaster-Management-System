@@ -15,7 +15,7 @@ function auth(roles = []) {
         // Check if no token
         if (!token){
             return res.status(401).json({
-                msg: 'No token, authorization denied'
+                message: 'No token, authorization denied'
             });
         }
 
@@ -31,7 +31,7 @@ function auth(roles = []) {
         } catch(err){
             console.log(err);
             res.status(401).json({
-                msg: 'Token is not valid'
+                message: 'Token is not valid'
             });
         }
     }
