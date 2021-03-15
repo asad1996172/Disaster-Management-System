@@ -52,6 +52,10 @@
                                     </div>
                                     <form class="user" method="post" action="/register">
                                         <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" id="name" name="name" aria-describedby="nameHelp"
+                                                placeholder="Enter Full Name..." required>
+                                        </div>
+                                        <div class="form-group">
                                             <input type="email" class="form-control form-control-user" id="email"
                                                 name="email" aria-describedby="emailHelp"
                                                 placeholder="Enter Email Address..." required>
@@ -59,6 +63,10 @@
                                         <div class="form-group">
                                             <input type="password" class="form-control form-control-user" id="password"
                                                 name="password" placeholder="Password" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" id="zipcode" name="zipcode" aria-describedby="zipcodeHelp"
+                                                placeholder="Enter ZipCode...">
                                         </div>
                                         <div class="form-group" style="margin-left: 5px;">
                                             <strong>User Role</strong>
@@ -81,7 +89,7 @@
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
-                                            Login
+                                            Register
                                         </button>
                                         <hr>
                                         <a href="/" class="btn btn-google btn-user btn-block">
