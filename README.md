@@ -21,6 +21,9 @@ Clone this repository
 ```sh
 git clone https://github.com/asad1996172/Disaster-Management-System
 ```
+
+To enable administrator acces in VScode for Windows run ```Set-ExecutionPolicy Unrestricted```
+
 ### Setting up Server-side
 1) Install NodeJS
 2) Install XAMPP: ```https://sourceforge.net/projects/xampp/files/XAMPP%20Mac%20OS%20X/8.0.2/```
