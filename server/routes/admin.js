@@ -14,10 +14,10 @@ router.get("/admin", auth(['admin']), async (req, res) => {
 // @route   POST /create_event
 // @desc    Create event by Admin
 // @access  Admin
-router.post("/create_event", auth(['admin']), async (req, res)=> {
-    const {name, disaster_type, location, zipcode, severity, items, event_date}=req.body;
+router.post("/create_event", async (req, res)=> {
+    const {event_name, disaster_type, severity, location, event_date, zipcode, items}=req.body;
 
-    const alreadyExistsEvent=await Event.findOne({where: {name}}).catch(
+    const alreadyExistsEvent=await Event.findOne({where: {event_name}}).catch(
         (err)=> {
             console.log("Error: ", err);}
     );
@@ -25,12 +25,10 @@ router.post("/create_event", auth(['admin']), async (req, res)=> {
     if (alreadyExistsEvent) {
         return res.json({message: "Event already exists!"});}
 
-    
-
-    const newEvent=new Event({});
-    const savedEvent=await newEvent.save(name, disaster_type, severity, location, event_date, zipcode, items).catch((err)=> {
+    const newEvent=new Event({event_name, disaster_type, severity, location, event_date, zipcode, items});
+    const savedEvent=await newEvent.save().catch((err)=> {
         console.log("Error: ", err);
-        res.json({error: "Cannot create event!"}); });
+        res.json({error: "Cannot create event at the moment!"}); });
 
     if (savedEvent) res.json({message: "Event Created!"}); })
 
