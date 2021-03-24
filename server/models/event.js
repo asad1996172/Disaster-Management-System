@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../database");
 
 const Event = sequelize.define("Event", {
-  name: {
+  event_name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -18,15 +18,15 @@ const Event = sequelize.define("Event", {
     allowNull: false,
   },
   event_date: {
-    type: DataTypes.STRING,
+    type: DataTypes.DATE,
     allowNull: false,
   },
   zipcode: {
-    type: DataTypes.DATE,
+    type: DataTypes.STRING,
     allowNull: true,
   },
   items: {
-    type: DataTypes.STRING(2000)
+    type: DataTypes.STRING
   }
 });
 
