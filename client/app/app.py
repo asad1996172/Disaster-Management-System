@@ -5,6 +5,11 @@ import json
 app = Flask(__name__)
 
 
+@app.route('/create_event', methods=['POST', 'GET'])
+def create_event():
+    if request.method == 'GET':
+        return render_template('admin/create_event.html')
+
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     if request.method == 'GET':
@@ -107,9 +112,13 @@ def dashboard():
             message = json.loads(res.text)['message']
             if message == "Welcome to Admin Page!":
                 events = json.loads(res.text)['events']
-                print (events)
+                parsed_events = []
+                for event in events:
+                    event['event_date'] = event['event_date'].split('T')[0]
+                    parsed_events.append(event)
                 name = request.cookies.get('Name')
-                response = make_response(render_template('admin/dashboard.html', name=name, events=events))
+                response = make_response(render_template(
+                    'admin/dashboard.html', name=name, events=parsed_events))
                 response.set_cookie('JWT', token)
                 return response
             else:
