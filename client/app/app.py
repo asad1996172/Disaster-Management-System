@@ -106,7 +106,10 @@ def dashboard():
 
             message = json.loads(res.text)['message']
             if message == "Welcome to Admin Page!":
-                response = make_response(render_template('admin/dashboard.html'))
+                events = json.loads(res.text)['events']
+                print (events)
+                name = request.cookies.get('Name')
+                response = make_response(render_template('admin/dashboard.html', name=name, events=events))
                 response.set_cookie('JWT', token)
                 return response
             else:
@@ -124,8 +127,9 @@ def dashboard():
 
             message = json.loads(res.text)['message']
             if message == "Welcome to Donor Page!":
+                name = request.cookies.get('Name')
                 response = make_response(
-                    render_template('donor/dashboard.html'))
+                    render_template('donor/dashboard.html', name=name))
                 response.set_cookie('JWT', token)
                 return response
             else:
@@ -143,8 +147,9 @@ def dashboard():
 
             message = json.loads(res.text)['message']
             if message == "Welcome to Recipient Page!":
+                name = request.cookies.get('Name')
                 response = make_response(
-                    render_template('recipient/dashboard.html'))
+                    render_template('recipient/dashboard.html', name=name))
                 response.set_cookie('JWT', token)
                 return response
             else:
