@@ -9,6 +9,43 @@ app = Flask(__name__)
 def create_event():
     if request.method == 'GET':
         return render_template('admin/create_event.html')
+    elif request.method == 'POST':
+        event_name = request.form['event_name']
+        disaster_type = request.form['disaster_type']
+        severity = request.form['severity']
+        location = request.form['location']
+        zipcode = request.form['zipcode']
+        event_date = request.form['event_date']
+        items = request.form.getlist('mytext[]')
+
+        items = '||'.join(items)
+        
+        data_payload = {
+            'event_name': event_name,
+            'disaster_type': disaster_type,
+            'severity': severity,
+            'location': location,
+            'event_date': str(event_date),
+            'zipcode': zipcode,
+            'items': items
+        }
+        token = request.cookies.get('JWT')
+        res = requests.post(
+            'http://localhost:5000/api/v1/create_event',
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
+        
+        # TODO: Handle other possibilietes
+        # TODO: Fix Items frontend both in form and dashboard
+
+        if message == 'Event Created!':
+            response = make_response(redirect('/dashboard'))
+            return response
 
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
@@ -40,7 +77,7 @@ def register():
         res = requests.post(
             'http://localhost:5000/api/v1/register',
             headers={
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
             data=data_payload
         )

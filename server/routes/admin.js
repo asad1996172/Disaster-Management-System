@@ -19,7 +19,7 @@ router.get("/admin", auth(['admin']), async (req, res) => {
 // @route   POST /create_event
 // @desc    Create event by Admin
 // @access  Admin
-router.post("/create_event", async (req, res)=> {
+router.post("/create_event", auth(['admin']),async (req, res)=> {
     const {event_name, disaster_type, severity, location, event_date, zipcode, items}=req.body;
 
     const alreadyExistsEvent=await Event.findOne({where: {event_name}}).catch(
