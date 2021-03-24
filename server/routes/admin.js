@@ -8,7 +8,12 @@ const router = express.Router();
 // @desc    Admin homepage
 // @access  Admin
 router.get("/admin", auth(['admin']), async (req, res) => {
-    res.json({ message: "Welcome to Admin Page!"});
+    Event.findAll({}, {raw: true}).then(events => {
+        // events will be an array of all Event instances
+        console.log(events)
+        res.json({ message: "Welcome to Admin Page!", events: events});
+    })
+    
 });
 
 // @route   POST /create_event
