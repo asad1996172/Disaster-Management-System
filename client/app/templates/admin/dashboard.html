@@ -31,11 +31,11 @@
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/dashboard">
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-tasks"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Admin </div>
+                <div class="sidebar-brand-text mx-3">Admin</div>
             </a>
 
             <!-- Divider -->
@@ -43,10 +43,14 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="/dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span></a>
+                <a class="nav-link" href="/create_event">
+                    <i class="fas fa-columns"></i>
+                    <span>Create Event</span></a>
             </li>
+            
 
             
 
@@ -153,10 +157,22 @@
                         {% if events %}
                             {% for event in events %}
                                 <div class="card shadow mb-4">
-                                    <div class="card-header py-3">
-                                        <h6 class="m-0 font-weight-bold text-primary">List of Events</h6>
+                                    <div class="card-header py-3 list-inline m-0">
+                                        <span class="m-0 font-weight-bold text-primary"> Event Name: </span> {{ event['event_name'] }}</span>
                                     </div>
                                     <div class="card-body">
+                                        <div class="form-group row">
+                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                <span class="m-0 font-weight-bold text-primary"> Disaster Type: </span> {{ event['disaster_type'] }}</span><br>
+                                                <span class="m-0 font-weight-bold text-primary"> Severity: </span> {{ event['severity'] }}</span><br>
+                                                <span class="m-0 font-weight-bold text-primary"> Location: </span> {{ event['location'] }}</span>
+                                            </div>
+                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                <span class="m-0 font-weight-bold text-primary"> Event Date: </span> {{ event['event_date'] }}</span><br>
+                                                <span class="m-0 font-weight-bold text-primary"> Zipcode: </span> {{ event['zipcode'] }}</span><br>
+                                                <span class="m-0 font-weight-bold text-primary"> Items Required: </span> {{ event['items'] }}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             {% endfor %}
