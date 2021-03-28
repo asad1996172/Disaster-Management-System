@@ -5,6 +5,48 @@ import json
 app = Flask(__name__)
 
 
+@app.route('/create_event', methods=['POST', 'GET'])
+def create_event():
+    if request.method == 'GET':
+        return render_template('admin/create_event.html')
+    elif request.method == 'POST':
+        event_name = request.form['event_name']
+        disaster_type = request.form['disaster_type']
+        severity = request.form['severity']
+        location = request.form['location']
+        zipcode = request.form['zipcode']
+        event_date = request.form['event_date']
+        items = request.form.getlist('mytext[]')
+
+        items = '||'.join(items)
+        
+        data_payload = {
+            'event_name': event_name,
+            'disaster_type': disaster_type,
+            'severity': severity,
+            'location': location,
+            'event_date': str(event_date),
+            'zipcode': zipcode,
+            'items': items
+        }
+        token = request.cookies.get('JWT')
+        res = requests.post(
+            'http://localhost:5000/api/v1/create_event',
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
+        
+        # TODO: Handle other possibilietes
+        # TODO: Fix Items frontend both in form and dashboard
+
+        if message == 'Event Created!':
+            response = make_response(redirect('/dashboard'))
+            return response
+
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     if request.method == 'GET':
@@ -35,7 +77,7 @@ def register():
         res = requests.post(
             'http://localhost:5000/api/v1/register',
             headers={
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
             data=data_payload
         )
@@ -106,7 +148,14 @@ def dashboard():
 
             message = json.loads(res.text)['message']
             if message == "Welcome to Admin Page!":
-                response = make_response(render_template('admin/dashboard.html'))
+                events = json.loads(res.text)['events']
+                parsed_events = []
+                for event in events:
+                    event['event_date'] = event['event_date'].split('T')[0]
+                    parsed_events.append(event)
+                name = request.cookies.get('Name')
+                response = make_response(render_template(
+                    'admin/dashboard.html', name=name, events=parsed_events))
                 response.set_cookie('JWT', token)
                 return response
             else:
@@ -124,8 +173,9 @@ def dashboard():
 
             message = json.loads(res.text)['message']
             if message == "Welcome to Donor Page!":
+                name = request.cookies.get('Name')
                 response = make_response(
-                    render_template('donor/dashboard.html'))
+                    render_template('donor/dashboard.html', name=name))
                 response.set_cookie('JWT', token)
                 return response
             else:
@@ -143,8 +193,9 @@ def dashboard():
 
             message = json.loads(res.text)['message']
             if message == "Welcome to Recipient Page!":
+                name = request.cookies.get('Name')
                 response = make_response(
-                    render_template('recipient/dashboard.html'))
+                    render_template('recipient/dashboard.html', name=name))
                 response.set_cookie('JWT', token)
                 return response
             else:
