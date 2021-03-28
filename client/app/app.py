@@ -18,7 +18,7 @@ def create_event():
         event_date = request.form['event_date']
         items = request.form.getlist('mytext[]')
 
-        items = '||'.join(items)
+        items = ', '.join(items)
         
         data_payload = {
             'event_name': event_name,
@@ -39,14 +39,17 @@ def create_event():
             data=data_payload
         )
         message = json.loads(res.text)['message']
-        
-        # TODO: Handle other possibilietes
-        # TODO: Fix Items frontend both in form and dashboard
 
         if message == 'Event Created!':
             response = make_response(redirect('/dashboard'))
             return response
-
+        elif message == "Cannot create event at the moment!" or message == "Event already exists!":
+            return render_template('admin/create_event.html', message = message)
+        else:
+            response = make_response(redirect('/'))
+            response.set_cookie('JWT', '')
+            response.set_cookie('message', message)
+            return response
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     if request.method == 'GET':
@@ -132,6 +135,7 @@ def login():
 def dashboard():
     if request.method == 'GET':
         token = request.cookies.get('JWT')
+
         if token == '':
             response = make_response(redirect('/'))
             response.set_cookie('JWT', '')
