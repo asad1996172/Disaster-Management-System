@@ -37,4 +37,19 @@ router.post("/create_event", auth(['admin']),async (req, res)=> {
 
     if (savedEvent) res.json({message: "Event Created!"}); })
 
+
+// @route   POST /delete_event
+// @desc    Delete event
+// @access  Public
+router.post("/delete_event", async (req, res)=> {
+    const { event_name }=req.body;
+
+    const alreadyExistsEvent=await Event.findOne({where: {event_name}})
+    if (alreadyExistsEvent) {
+        await Event.destroy({where: {event_name}})
+        return res.json({message: "Event deleted successfully"});
+    }
+
+    return res.json({message: "Event doesnot exist"});
+})
 module.exports = router;
