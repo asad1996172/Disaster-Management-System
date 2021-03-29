@@ -38,7 +38,6 @@ describe("Test Authentication", () => {
         
         await adminUser.save().catch((err)=> {
             console.log("Error: ", err);
-            res.json({error: "Cannot register user at the moment!"}); 
         });
         const admin = {
             fullName:'John Doe',
@@ -60,7 +59,6 @@ describe("Test Authentication", () => {
         
         await adminUser.save().catch((err)=> {
             console.log("Error: ", err);
-            res.json({error: "Cannot register user at the moment!"}); 
         });
         const admin = {
             fullName:'John Doe',
@@ -82,7 +80,6 @@ describe("Test Authentication", () => {
         
         await adminUser.save().catch((err)=> {
             console.log("Error: ", err);
-            res.json({error: "Cannot register user at the moment!"}); 
         });
         const admin = {
             email: 'admin@admin.com',
@@ -101,7 +98,6 @@ describe("Test Authentication", () => {
         
         await adminUser.save().catch((err)=> {
             console.log("Error: ", err);
-            res.json({error: "Cannot register user at the moment!"}); 
         });
         const admin = {
             email: 'random@admin.com',
@@ -120,7 +116,6 @@ describe("Test Authentication", () => {
         
         await adminUser.save().catch((err)=> {
             console.log("Error: ", err);
-            res.json({error: "Cannot register user at the moment!"}); 
         });
         const admin = {
             email: 'admin@admin.com',
