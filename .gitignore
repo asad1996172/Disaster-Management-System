@@ -9,5 +9,5 @@
 /client/.coverage
 /client/app/__pycache__
 
-.DS_Store/
+.DS_Store
 theme/
