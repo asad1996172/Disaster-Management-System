@@ -3,7 +3,8 @@ import requests
 import json
 
 app = Flask(__name__)
-
+json_header = 'application/JSON"'
+api_header = 'application/x-www-form-urlencoded'
 
 @app.route('/create_event', methods=['POST', 'GET'])
 def create_event():
@@ -11,7 +12,7 @@ def create_event():
         return render_template('admin/create_event.html')
     elif request.method == 'POST':
         headers = request.headers
-        if headers.get('Content-Type') == "application/JSON":
+        if headers.get('Content-Type') == json_header:
             data_string = request.get_data()
             form = json.loads(data_string)
         else:
@@ -23,7 +24,7 @@ def create_event():
         location = form['location']
         zipcode = form['zipcode']
         event_date = form['event_date']
-        if headers.get('Content-Type') == "application/JSON":
+        if headers.get('Content-Type') == json_header:
             items = form['items']
         else:
             items = form.getlist('mytext[]')
@@ -42,7 +43,7 @@ def create_event():
         res = requests.post(
             'http://localhost:5000/api/v1/create_event',
             headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': api_header,
                 'x-auth-token': token
             },
             data=data_payload
@@ -74,7 +75,7 @@ def logout():
 def register():
     if request.method == 'POST':
         headers = request.headers
-        if headers.get('Content-Type') == "application/JSON":
+        if headers.get('Content-Type') == json_header:
             data_string = request.get_data()
             form = json.loads(data_string)
         else:
@@ -96,7 +97,7 @@ def register():
         res = requests.post(
             'http://localhost:5000/api/v1/register',
             headers={
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': api_header,
             },
             data=data_payload
         )
@@ -112,7 +113,7 @@ def register():
 def login():
     if request.method == 'POST':
         headers = request.headers
-        if headers.get('Content-Type') == "application/JSON":
+        if headers.get('Content-Type') == json_header:
             data_string = request.get_data()
             form = json.loads(data_string)
         else:
@@ -124,7 +125,7 @@ def login():
         res = requests.post(
             'http://localhost:5000/api/v1/login',
             headers={
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': api_header
             },
             data={
                 'email': email,
@@ -153,6 +154,72 @@ def login():
         else:
             return redirect(url_for('dashboard'))
     
+def admin_dashboard(token):
+    res = requests.get(
+        'http://localhost:5000/api/v1/admin',
+        headers={
+                    'x-auth-token': token
+                }
+    )
+    message = json.loads(res.text)['message']
+    if message == "Welcome to Admin Page!":
+        events = json.loads(res.text)['events']
+        parsed_events = []
+        for event in events:
+            event['event_date'] = event['event_date'].split('T')[0]
+            parsed_events.append(event)
+        name = request.cookies.get('Name')
+        response = make_response(render_template(
+            'admin/dashboard.html', name=name, events=parsed_events))
+        response.set_cookie('JWT', token)
+        return response
+    else:
+        response = make_response(redirect('/'))
+        response.set_cookie('JWT', '')
+        response.set_cookie('message', message)
+        return response
+
+def donor_dashboard(token):
+    res = requests.get(
+        'http://localhost:5000/api/v1/donor',
+        headers={
+                        'x-auth-token': token
+                    }
+    )
+
+    message = json.loads(res.text)['message']
+    if message == "Welcome to Donor Page!":
+        name = request.cookies.get('Name')
+        response = make_response(
+            render_template('donor/dashboard.html', name=name))
+        response.set_cookie('JWT', token)
+        return response
+    else:
+        response = make_response(redirect('/'))
+        response.set_cookie('JWT', '')
+        response.set_cookie('message', message)
+        return response
+
+def recipient_dashboard(token):
+    res = requests.get(
+        'http://localhost:5000/api/v1/recipient',
+        headers={
+                        'x-auth-token': token
+                    }
+    )
+
+    message = json.loads(res.text)['message']
+    if message == "Welcome to Recipient Page!":
+        name = request.cookies.get('Name')
+        response = make_response(
+            render_template('recipient/dashboard.html', name=name))
+        response.set_cookie('JWT', token)
+        return response
+    else:
+        response = make_response(redirect('/'))
+        response.set_cookie('JWT', '')
+        response.set_cookie('message', message)
+        return response
 
 @app.route('/dashboard', methods=['POST', 'GET'])
 def dashboard():
@@ -166,70 +233,11 @@ def dashboard():
             return response
         role = request.cookies.get('Role')
         if role == 'admin':  
-            res = requests.get(
-                'http://localhost:5000/api/v1/admin',
-                headers={
-                    'x-auth-token': token
-                }
-            )
-
-            message = json.loads(res.text)['message']
-            if message == "Welcome to Admin Page!":
-                events = json.loads(res.text)['events']
-                parsed_events = []
-                for event in events:
-                    event['event_date'] = event['event_date'].split('T')[0]
-                    parsed_events.append(event)
-                name = request.cookies.get('Name')
-                response = make_response(render_template(
-                    'admin/dashboard.html', name=name, events=parsed_events))
-                response.set_cookie('JWT', token)
-                return response
-            else:
-                response = make_response(redirect('/'))
-                response.set_cookie('JWT', '')
-                response.set_cookie('message', message)
-                return response
+            return admin_dashboard(token)
         elif role == 'donor':
-            res = requests.get(
-                'http://localhost:5000/api/v1/donor',
-                headers={
-                    'x-auth-token': token
-                }
-            )
-
-            message = json.loads(res.text)['message']
-            if message == "Welcome to Donor Page!":
-                name = request.cookies.get('Name')
-                response = make_response(
-                    render_template('donor/dashboard.html', name=name))
-                response.set_cookie('JWT', token)
-                return response
-            else:
-                response = make_response(redirect('/'))
-                response.set_cookie('JWT', '')
-                response.set_cookie('message', message)
-                return response
+            return donor_dashboard(token)
         elif role == 'recipient':
-            res = requests.get(
-                'http://localhost:5000/api/v1/recipient',
-                headers={
-                    'x-auth-token': token
-                }
-            )
-
-            message = json.loads(res.text)['message']
-            if message == "Welcome to Recipient Page!":
-                name = request.cookies.get('Name')
-                response = make_response(
-                    render_template('recipient/dashboard.html', name=name))
-                response.set_cookie('JWT', token)
-                return response
-            else:
-                response = make_response(redirect('/'))
-                response.set_cookie('JWT', '')
-                response.set_cookie('message', message)
-                return response
+            return recipient_dashboard(token)
 
 @app.route('/')
 def dams_homepage():
