@@ -217,3 +217,69 @@ def test_recipient_dashboard(app, client):
     )
     message = json.loads(res.text)['message']
     assert message == "User deleted successfully"
+
+def test_create_event(app, client):
+    data = {
+        'email': 'admin@admin.com',
+        'password': '123456',
+        'name': 'Admin',
+        'options': 'admin',
+        'zipcode': '52242'
+    }
+    headers = {
+        "Content-Type": "application/JSON"
+    }
+    response = client.post(
+        '/register', data=json.dumps(data), headers=headers, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Thanks for registering" in response.data
+
+    login_user_data = {
+        'email': 'admin@admin.com',
+        'password': '123456'
+    }
+
+    response = client.post(
+        '/login', data=json.dumps(login_user_data), headers=headers, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Admin" in response.data
+    
+    # Testing GET request
+    response = client.get('/create_event', follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Create Disaster Event" in response.data
+
+    # Testing POST request
+    data_payload = {
+        'event_name': 'Katrina',
+        'disaster_type': 'Hurricane',
+        'severity': 'extreme',
+        'location': 'US',
+        'event_date': '2006-01-01',
+        'zipcode': '52245',
+        'items': ''
+    }
+    response = client.post(
+        '/create_event', data=json.dumps(data_payload), headers=headers, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Katrina" in response.data
+
+    res = requests.post(
+        'http://localhost:5000/api/v1/delete_event',
+        headers={
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data={'event_name': 'Katrina'}
+    )
+    message = json.loads(res.text)['message']
+    assert message == "Event deleted successfully"
+    
+    res = requests.post(
+        'http://localhost:5000/api/v1/delete_user',
+        headers={
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data={'email': 'admin@admin.com'}
+    )
+    message = json.loads(res.text)['message']
+    assert message == "User deleted successfully"

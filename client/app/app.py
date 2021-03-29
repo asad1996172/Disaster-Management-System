@@ -10,15 +10,24 @@ def create_event():
     if request.method == 'GET':
         return render_template('admin/create_event.html')
     elif request.method == 'POST':
-        event_name = request.form['event_name']
-        disaster_type = request.form['disaster_type']
-        severity = request.form['severity']
-        location = request.form['location']
-        zipcode = request.form['zipcode']
-        event_date = request.form['event_date']
-        items = request.form.getlist('mytext[]')
+        headers = request.headers
+        if headers.get('Content-Type') == "application/JSON":
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
 
-        items = ', '.join(items)
+        event_name = form['event_name']
+        disaster_type = form['disaster_type']
+        severity = form['severity']
+        location = form['location']
+        zipcode = form['zipcode']
+        event_date = form['event_date']
+        if headers.get('Content-Type') == "application/JSON":
+            items = form['items']
+        else:
+            items = form.getlist('mytext[]')
+            items = ', '.join(items)
         
         data_payload = {
             'event_name': event_name,
