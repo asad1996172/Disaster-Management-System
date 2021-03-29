@@ -34,6 +34,32 @@ describe("Test Authentication", () => {
         });
     });
 
+    it("Deleting User", async () => {
+        const admin = {
+            fullName:'John Doe',
+            email: 'admin@admin.com',
+            password: '123456',
+            role: 'admin',
+            zipcode: '52242'
+        };
+
+        await request(app)
+        .post("/api/v1/delete_user")
+        .send({'email': 'random@random.com'})
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('User doesnot exist');
+        });
+
+        await request(app)
+        .post("/api/v1/delete_user")
+        .send({'email': admin['email']})
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('User deleted successfully');
+        });
+    });
+
     it("Register Multiple Admin", async () => {
         
         await adminUser.save().catch((err)=> {

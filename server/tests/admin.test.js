@@ -90,6 +90,24 @@ describe("Test Admin Dashboard", async () => {
             expect(response.statusCode).toBe(200);
             expect(response.body.message).toBe('Event Created!');
         });
+
+        await request(app)
+        .post("/api/v1/delete_event")
+        .set({'x-auth-token': jwtToken})
+        .send({'event_name': event['event_name']})
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('Event deleted successfully');
+        });
+
+        await request(app)
+        .post("/api/v1/delete_event")
+        .set({'x-auth-token': jwtToken})
+        .send({'event_name': event['event_name']})
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('Event doesnot exist');
+        });
         
     });
 
