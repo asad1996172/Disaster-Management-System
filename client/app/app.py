@@ -64,11 +64,18 @@ def logout():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        role = request.form['options']
-        fullname = request.form['name']
-        zipcode = request.form['zipcode']
+        headers = request.headers
+        if headers.get('Content-Type') == "application/JSON":
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+
+        email = form['email']
+        password = form['password']
+        role = form['options']
+        fullname = form['name']
+        zipcode = form['zipcode']
 
         data_payload = {
             'email': email,
@@ -95,8 +102,15 @@ def register():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        headers = request.headers
+        if headers.get('Content-Type') == "application/JSON":
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+        
+        email = form['email']
+        password = form['password']
 
         res = requests.post(
             'http://localhost:5000/api/v1/login',
