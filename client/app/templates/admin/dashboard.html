@@ -151,7 +151,14 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
+                    {% if message %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {% endif %}
                     <div class="container-fluid float-left">
                     <!-- DataTales Example -->
                         {% if events %}
@@ -170,10 +177,15 @@
                                             <div class="col-sm-6 mb-3 mb-sm-0">
                                                 <span class="m-0 font-weight-bold text-primary"> Event Date: </span> {{ event['event_date'] }}</span><br>
                                                 <span class="m-0 font-weight-bold text-primary"> Zipcode: </span> {{ event['zipcode'] }}</span><br>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-6 mb-3 mb-sm-0">
                                                 <span class="m-0 font-weight-bold text-primary"> Items Required: </span> {{ event['items'] }}</span>
                                             </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             {% endfor %}
                         {% else %}

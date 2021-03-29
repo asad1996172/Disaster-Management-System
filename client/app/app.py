@@ -10,15 +10,24 @@ def create_event():
     if request.method == 'GET':
         return render_template('admin/create_event.html')
     elif request.method == 'POST':
-        event_name = request.form['event_name']
-        disaster_type = request.form['disaster_type']
-        severity = request.form['severity']
-        location = request.form['location']
-        zipcode = request.form['zipcode']
-        event_date = request.form['event_date']
-        items = request.form.getlist('mytext[]')
+        headers = request.headers
+        if headers.get('Content-Type') == "application/JSON":
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
 
-        items = '||'.join(items)
+        event_name = form['event_name']
+        disaster_type = form['disaster_type']
+        severity = form['severity']
+        location = form['location']
+        zipcode = form['zipcode']
+        event_date = form['event_date']
+        if headers.get('Content-Type') == "application/JSON":
+            items = form['items']
+        else:
+            items = form.getlist('mytext[]')
+            items = ', '.join(items)
         
         data_payload = {
             'event_name': event_name,
@@ -39,14 +48,17 @@ def create_event():
             data=data_payload
         )
         message = json.loads(res.text)['message']
-        
-        # TODO: Handle other possibilietes
-        # TODO: Fix Items frontend both in form and dashboard
 
         if message == 'Event Created!':
             response = make_response(redirect('/dashboard'))
             return response
-
+        elif message == "Cannot create event at the moment!" or message == "Event already exists!":
+            return render_template('admin/create_event.html', message = message)
+        else:
+            response = make_response(redirect('/'))
+            response.set_cookie('JWT', '')
+            response.set_cookie('message', message)
+            return response
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     if request.method == 'GET':
@@ -61,11 +73,18 @@ def logout():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        role = request.form['options']
-        fullname = request.form['name']
-        zipcode = request.form['zipcode']
+        headers = request.headers
+        if headers.get('Content-Type') == "application/JSON":
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+
+        email = form['email']
+        password = form['password']
+        role = form['options']
+        fullname = form['name']
+        zipcode = form['zipcode']
 
         data_payload = {
             'email': email,
@@ -92,8 +111,15 @@ def register():
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+        headers = request.headers
+        if headers.get('Content-Type') == "application/JSON":
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+        
+        email = form['email']
+        password = form['password']
 
         res = requests.post(
             'http://localhost:5000/api/v1/login',
@@ -132,6 +158,7 @@ def login():
 def dashboard():
     if request.method == 'GET':
         token = request.cookies.get('JWT')
+
         if token == '':
             response = make_response(redirect('/'))
             response.set_cookie('JWT', '')

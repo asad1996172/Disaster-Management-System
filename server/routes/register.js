@@ -30,6 +30,23 @@ router.post("/register", async (req, res)=> {
         console.log("Error: ", err);
         res.json({error: "Cannot register user at the moment!"}); });
 
-    if (savedUser) res.json({message: "Thanks for registering"}); })
+    if (savedUser) res.json({message: "Thanks for registering"}); 
+})
+
+
+// @route   POST /delete_user
+// @desc    Delete user
+// @access  Public
+router.post("/delete_user", async (req, res)=> {
+    const { email }=req.body;
+
+    const alreadyExistsUser=await User.findOne({where: {email}});
+    if (alreadyExistsUser) {
+        await User.destroy({where: {email}})
+        return res.json({message: "User deleted successfully"});
+    }
+
+    return res.json({message: "User doesnot exist"});
+})
 
 module.exports = router
