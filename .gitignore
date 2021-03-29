@@ -8,3 +8,5 @@
 /client/.pytest_cache
 /client/.coverage
 /client/app/__pycache__
+
+theme/
