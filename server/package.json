@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index",
     "server": "nodemon index",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --detectOpenHandles --forceExit  --runInBand --silent"
   },
   "jest": {
     "collectCoverage": true,
