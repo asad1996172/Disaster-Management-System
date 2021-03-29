@@ -9,7 +9,15 @@ describe("Test Authentication", () => {
         await sequelize.sync({ force: true })
     })
 
-    it("Register Admin", async () => {
+    const adminUser=new User({
+        fullName: 'Admin',
+        email: 'admin@admin.com',
+        password: '123456',
+        role: 'admin',
+        zipcode: 'zipcode'
+    });
+
+    it("Register User", async () => {
         const admin = {
             fullName:'John Doe',
             email: 'admin@admin.com',
@@ -27,13 +35,7 @@ describe("Test Authentication", () => {
     });
 
     it("Register Multiple Admin", async () => {
-        const adminUser=new User({
-            fullName: 'Admin',
-            email: 'admin@admin.com',
-            password: '123456',
-            role: 'admin',
-            zipcode: 'zipcode'
-        });
+        
         await adminUser.save().catch((err)=> {
             console.log("Error: ", err);
             res.json({error: "Cannot register user at the moment!"}); 
@@ -55,13 +57,7 @@ describe("Test Authentication", () => {
     });
 
     it("Register Existing User", async () => {
-        const adminUser=new User({
-            fullName: 'Admin',
-            email: 'admin@admin.com',
-            password: '123456',
-            role: 'admin',
-            zipcode: 'zipcode'
-        });
+        
         await adminUser.save().catch((err)=> {
             console.log("Error: ", err);
             res.json({error: "Cannot register user at the moment!"}); 
@@ -82,6 +78,62 @@ describe("Test Authentication", () => {
         });
     });
 
+    it("Login User", async () => {
+        
+        await adminUser.save().catch((err)=> {
+            console.log("Error: ", err);
+            res.json({error: "Cannot register user at the moment!"}); 
+        });
+        const admin = {
+            email: 'admin@admin.com',
+            password: '123456',
+        };
+        await request(app)
+        .post("/api/v1/login")
+        .send(admin)
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('Welcome Back!');
+        });
+    });
+
+    it("Login User with wrong email", async () => {
+        
+        await adminUser.save().catch((err)=> {
+            console.log("Error: ", err);
+            res.json({error: "Cannot register user at the moment!"}); 
+        });
+        const admin = {
+            email: 'random@admin.com',
+            password: '123456',
+        };
+        await request(app)
+        .post("/api/v1/login")
+        .send(admin)
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('Email or password does not match!');
+        });
+    });
+
+    it("Login User with wrong passowrd", async () => {
+        
+        await adminUser.save().catch((err)=> {
+            console.log("Error: ", err);
+            res.json({error: "Cannot register user at the moment!"}); 
+        });
+        const admin = {
+            email: 'admin@admin.com',
+            password: 'random',
+        };
+        await request(app)
+        .post("/api/v1/login")
+        .send(admin)
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('Email or password does not match!');
+        });
+    });
     // After all tersts have finished, close the DB connection
     afterAll(async () => {
         await sequelize.close()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1616987663329" clover="3.2.0">
-  <project timestamp="1616987663329" name="All files">
-    <metrics statements="115" coveredstatements="72" conditionals="23" coveredconditionals="6" methods="17" coveredmethods="4" elements="155" coveredelements="82" complexity="0" loc="115" ncloc="115" packages="4" files="10" classes="10"/>
+<coverage generated="1616988394686" clover="3.2.0">
+  <project timestamp="1616988394687" name="All files">
+    <metrics statements="115" coveredstatements="82" conditionals="23" coveredconditionals="10" methods="17" coveredmethods="5" elements="155" coveredelements="97" complexity="0" loc="115" ncloc="115" packages="4" files="10" classes="10"/>
     <package name="database">
       <metrics statements="10" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="index.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/database/index.js">
@@ -58,7 +58,7 @@
       </file>
     </package>
     <package name="routes">
-      <metrics statements="81" coveredstatements="51" conditionals="14" coveredconditionals="5" methods="13" coveredmethods="1"/>
+      <metrics statements="81" coveredstatements="61" conditionals="14" coveredconditionals="9" methods="13" coveredmethods="2"/>
       <file name="admin.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/routes/admin.js">
         <metrics statements="20" coveredstatements="7" conditionals="4" coveredconditionals="0" methods="5" coveredmethods="0"/>
         <line num="1" count="2" type="stmt"/>
@@ -108,23 +108,23 @@
         <line num="16" count="2" type="stmt"/>
       </file>
       <file name="login.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/routes/login.js">
-        <metrics statements="17" coveredstatements="6" conditionals="4" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <metrics statements="17" coveredstatements="16" conditionals="4" coveredconditionals="4" methods="2" coveredmethods="1"/>
         <line num="1" count="2" type="stmt"/>
         <line num="2" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
         <line num="5" count="2" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="10" count="3" type="stmt"/>
         <line num="12" count="0" type="stmt"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="19" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="16" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="19" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="31" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
         <line num="39" count="2" type="stmt"/>
       </file>
       <file name="recipient.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/routes/recipient.js">
