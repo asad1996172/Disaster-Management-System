@@ -6,6 +6,49 @@ app = Flask(__name__)
 json_header = 'application/JSON"'
 api_header = 'application/x-www-form-urlencoded'
 
+
+@app.route('/request_resources', methods=['POST'])
+def request_resources():
+    if request.method == 'POST':
+        headers = request.headers
+        if headers.get('Content-Type') == json_header:
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+
+        data_payload = {
+            'event_name': form['event_name'],
+            'email': request.cookies.get('Email'),
+            'items': []
+        }
+
+        items = form['items']
+        for item in items.split(', '):
+            quantity = form[item]
+            data_payload['items'].append(item + ":" + str(quantity))
+        
+        data_payload['item_quantities'] = '|'.join(data_payload['items'])
+        
+        token = request.cookies.get('JWT')
+        res = requests.post(
+            'http://localhost:5000/api/v1/request_resources',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
+        
+        # TODO: Add message for dashboard
+        # TODO: Catch other paths
+
+        message="Request Submitted Successfully !"
+        response = make_response(redirect('/dashboard'))
+        return response
+        
+
 @app.route('/create_event', methods=['POST', 'GET'])
 def create_event():
     if request.method == 'GET':
@@ -210,9 +253,15 @@ def recipient_dashboard(token):
 
     message = json.loads(res.text)['message']
     if message == "Welcome to Recipient Page!":
+        events = json.loads(res.text)['events']
+        parsed_events = []
+        for event in events:
+            event['item_names'] = event['items'].split(', ')
+            event['event_date'] = event['event_date'].split('T')[0]
+            parsed_events.append(event)
         name = request.cookies.get('Name')
         response = make_response(
-            render_template('recipient/dashboard.html', name=name))
+            render_template('recipient/dashboard.html', name=name, events=parsed_events))
         response.set_cookie('JWT', token)
         return response
     else:

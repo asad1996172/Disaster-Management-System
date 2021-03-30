@@ -6,7 +6,6 @@ def test_home_page(app, client):
     assert response.status_code == 200
     assert b"Disaster Assistance Management System" in response.data
 
-
 def test_register_page(app, client):
     
     # Testing GET request
@@ -39,7 +38,6 @@ def test_register_page(app, client):
     )
     message = json.loads(res.text)['message']
     assert message == "User deleted successfully"
-
 
 def test_login_page(app, client):
 

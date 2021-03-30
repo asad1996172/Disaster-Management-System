@@ -11,3 +11,4 @@
 
 .DS_Store
 theme/
+.pytest_cache
