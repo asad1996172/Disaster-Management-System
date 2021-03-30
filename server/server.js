@@ -1,6 +1,7 @@
 require("dotenv").config();
 require("./models/user");
 require("./models/event");
+require("./models/request");
 
 const express = require('express');
 const bodyParser = require("body-parser");
