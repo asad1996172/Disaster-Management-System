@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">86.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/22</span>
+                <span class='fraction'>19/22</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
+                <span class="strong">60% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/5</span>
+                <span class='fraction'>3/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.38% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/21</span>
+                <span class='fraction'>18/21</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -107,22 +107,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span></td><td class="text"><pre class="prettyprint lang-js">const auth = require('../middleware/auth');
@@ -140,23 +140,23 @@ router.get("/recipient", auth(['recipient']), async (req, res) =&gt; {
     });
 });
 &nbsp;
-router.post("/request_resources", auth(['recipient']), <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
-    const {event_name, email, item_quantities}=<span class="cstat-no" title="statement not covered" >req.body;</span>
+router.post("/request_resources", auth(['recipient']), async (req, res) =&gt; {
+    const {event_name, email, item_quantities}=req.body;
 &nbsp;
-    const alreadyExistsRequest=<span class="cstat-no" title="statement not covered" >await Request.findOne({where: {event_name: event_name, email: email}}).catch(</span>
+    const alreadyExistsRequest=await Request.findOne({where: {event_name: event_name, email: email}}).catch(
 <span class="fstat-no" title="function not covered" >        (e</span>rr)=&gt; {
 <span class="cstat-no" title="statement not covered" >            console.log("Error: ", err);}</span>
     );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (alreadyExistsRequest) {</span>
-<span class="cstat-no" title="statement not covered" >        return res.json({message: "Request already exists!"});}</span>
+    if (alreadyExistsRequest) {
+        return res.json({message: "Request already exists!"});}
 &nbsp;
-    const newRequest=<span class="cstat-no" title="statement not covered" >new Request({event_name, email, item_quantities});</span>
-    const savedRequest=<span class="cstat-no" title="statement not covered" >await newRequest.save().catch(<span class="fstat-no" title="function not covered" >(e</span>rr)=&gt; {</span>
+    const newRequest=new Request({event_name, email, item_quantities});
+    const savedRequest=await newRequest.save().catch(<span class="fstat-no" title="function not covered" >(e</span>rr)=&gt; {
 <span class="cstat-no" title="statement not covered" >        console.log("Error: ", err);</span>
 <span class="cstat-no" title="statement not covered" >        res.json({error: "Cannot save request at the moment!"}); </span>});
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (savedRequest) <span class="cstat-no" title="statement not covered" >res.json({message: "Request Created!"});</span></span>
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (savedRequest) res.json({message: "Request Created!"});
 });
 &nbsp;
 module.exports = router;</pre></td></tr></table></pre>
@@ -166,7 +166,7 @@ module.exports = router;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Mar 30 2021 16:34:07 GMT-0500 (Central Daylight Time)
+                at Wed Mar 31 2021 00:37:46 GMT-0500 (Central Daylight Time)
             </div>
         </div>
         <script src="../prettify.js"></script>

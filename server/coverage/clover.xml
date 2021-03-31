@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1617140047165" clover="3.2.0">
-  <project timestamp="1617140047165" name="All files">
-    <metrics statements="148" coveredstatements="127" conditionals="31" coveredconditionals="22" methods="23" coveredmethods="14" elements="202" coveredelements="163" complexity="0" loc="148" ncloc="148" packages="4" files="11" classes="11"/>
+<coverage generated="1617169066198" clover="3.2.0">
+  <project timestamp="1617169066198" name="All files">
+    <metrics statements="148" coveredstatements="134" conditionals="31" coveredconditionals="25" methods="23" coveredmethods="15" elements="202" coveredelements="174" complexity="0" loc="148" ncloc="148" packages="4" files="11" classes="11"/>
     <package name="database">
       <metrics statements="10" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
       <file name="index.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/database/index.js">
@@ -24,18 +24,18 @@
         <metrics statements="16" coveredstatements="15" conditionals="9" coveredconditionals="7" methods="2" coveredmethods="2"/>
         <line num="1" count="5" type="stmt"/>
         <line num="3" count="5" type="stmt"/>
-        <line num="7" count="20" type="cond" truecount="1" falsecount="1"/>
+        <line num="7" count="25" type="cond" truecount="1" falsecount="1"/>
         <line num="8" count="0" type="stmt"/>
-        <line num="11" count="20" type="stmt"/>
-        <line num="13" count="6" type="stmt"/>
-        <line num="16" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="11" count="25" type="stmt"/>
+        <line num="13" count="9" type="stmt"/>
+        <line num="16" count="9" type="cond" truecount="2" falsecount="0"/>
         <line num="17" count="1" type="stmt"/>
-        <line num="23" count="5" type="stmt"/>
-        <line num="24" count="5" type="stmt"/>
-        <line num="25" count="4" type="stmt"/>
-        <line num="26" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="23" count="8" type="stmt"/>
+        <line num="24" count="8" type="stmt"/>
+        <line num="25" count="7" type="stmt"/>
+        <line num="26" count="7" type="cond" truecount="4" falsecount="0"/>
         <line num="28" count="1" type="stmt"/>
-        <line num="30" count="3" type="stmt"/>
+        <line num="30" count="6" type="stmt"/>
         <line num="32" count="1" type="stmt"/>
         <line num="33" count="1" type="stmt"/>
       </file>
@@ -65,7 +65,7 @@
       </file>
     </package>
     <package name="routes">
-      <metrics statements="110" coveredstatements="91" conditionals="22" coveredconditionals="15" methods="19" coveredmethods="10"/>
+      <metrics statements="110" coveredstatements="98" conditionals="22" coveredconditionals="18" methods="19" coveredmethods="11"/>
       <file name="admin.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/routes/admin.js">
         <metrics statements="27" coveredstatements="23" conditionals="6" coveredconditionals="4" methods="6" coveredmethods="4"/>
         <line num="1" count="5" type="stmt"/>
@@ -142,7 +142,7 @@
         <line num="39" count="5" type="stmt"/>
       </file>
       <file name="recipient.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/routes/recipient.js">
-        <metrics statements="21" coveredstatements="11" conditionals="4" coveredconditionals="0" methods="5" coveredmethods="2"/>
+        <metrics statements="21" coveredstatements="18" conditionals="4" coveredconditionals="3" methods="5" coveredmethods="3"/>
         <line num="1" count="5" type="stmt"/>
         <line num="2" count="5" type="stmt"/>
         <line num="3" count="5" type="stmt"/>
@@ -153,16 +153,16 @@
         <line num="11" count="1" type="stmt"/>
         <line num="12" count="1" type="stmt"/>
         <line num="16" count="5" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="19" count="0" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
         <line num="21" count="0" type="stmt"/>
-        <line num="24" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
+        <line num="24" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
-        <line num="32" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="32" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="35" count="5" type="stmt"/>
       </file>
       <file name="register.js" path="/Users/asadmahmood/Projects/Disaster-Management-System/server/routes/register.js">
