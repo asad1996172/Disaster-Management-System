@@ -206,6 +206,17 @@ def test_recipient_dashboard(app, client):
     assert response.status_code == 200
     assert b"Recipient" in response.data
 
+    resource_data = {
+        'event_name': 'Katrina',
+        'items': 'Cash, Food',
+        'Cash': '10',
+        'Food': '10'
+    }
+    response = client.post(
+        '/request_resources', data=json.dumps(resource_data), headers=headers, follow_redirects=True)
+    assert response.status_code == 200
+    assert b"Recipient" in response.data
+    
     res = requests.post(
         'http://localhost:5000/api/v1/delete_user',
         headers={

@@ -3,7 +3,7 @@ import requests
 import json
 
 app = Flask(__name__)
-json_header = 'application/JSON"'
+json_header = 'application/JSON'
 api_header = 'application/x-www-form-urlencoded'
 
 
@@ -137,6 +137,7 @@ def register():
             'role': role,
             'zipcode': zipcode
         }
+        
         res = requests.post(
             'http://localhost:5000/api/v1/register',
             headers={
