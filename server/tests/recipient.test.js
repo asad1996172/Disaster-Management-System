@@ -18,7 +18,7 @@ describe("Test Recipient Dashboard", async () => {
         zipcode: '52242'
     });
 
-    it("Accessing Recipient Dashboard", async () => {
+    it("Accessing Recipient Dashboard and Making Resource Request", async () => {
         
         await recipientUser.save().catch((err)=> {
             console.log("Error: ", err);
@@ -46,6 +46,30 @@ describe("Test Recipient Dashboard", async () => {
         .then(async (response) => {
             expect(response.statusCode).toBe(200);
             expect(response.body.message).toBe('Welcome to Recipient Page!');
+        });
+
+        resource_request_payload = {
+            'event_name': 'Katrina',
+            'email': 'asad@gmail.com',
+            'item_quantities': ''
+        }
+
+        await request(app)
+        .post("/api/v1/request_resources")
+        .set({'x-auth-token': jwtToken})
+        .send(resource_request_payload)
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('Request Created!');
+        });
+
+        await request(app)
+        .post("/api/v1/request_resources")
+        .set({'x-auth-token': jwtToken})
+        .send(resource_request_payload)
+        .then(async (response) => {
+            expect(response.statusCode).toBe(200);
+            expect(response.body.message).toBe('Request already exists!');
         });
         
     });
