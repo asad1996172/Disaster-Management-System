@@ -146,11 +146,50 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Dashboard -- Donor</h1>
+                    {% if message %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
+                    {% endif %}
+                    <div class="container-fluid float-left">
+                                            <!-- DataTales Example -->
+                                            {% if donationRequests %}
+                                            {% for donationRequest in donationRequests %}
+                                                <div class="card shadow mb-4">
+                                                    <div class="card-header py-3 list-inline m-0">
+                                                        <span class="m-0 font-weight-bold text-primary"> Event Name: </span>{{ donationRequest['event_name'] }}</span>
+                                                        <span class="m-0 font-weight-bold text-primary float-right"> 
+                                                            <a class="btn btn-primary btn-user btn-block" href="#" data-toggle="modal" data-target="#resources{{ loop.index }}">
+                                                            Donate Items
+                                                            </a> 
+                                                        </span>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="form-group row">
+                                                            <div class="col-sm-6 mb-3 mb-sm-0">
+
+                                                            </div>
+                                                            <div class="col-sm-6 mb-3 mb-sm-0">
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group row">
+                                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                                <span class="m-0 font-weight-bold text-primary"> Items Required: </span> {{ donationRequest['item_quantities'] }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <h6 class="m-6">No Requests Exist in Database</h6>
+                                        {% endif %}
+                    </div>
+
 
                     
 
