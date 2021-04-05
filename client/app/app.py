@@ -237,7 +237,7 @@ def donor_dashboard(token):
         parsed_requests = []
         for donationRequest in donationRequests:
             donationRequest['event_name'] = donationRequest['event_name'].split(', ')
-            donationRequest['item_quantities'] = donationRequest['item_quantities'].split(', ')
+            donationRequest['item_quantities'] = donationRequest['item_quantities'].split('|')
             parsed_requests.append(donationRequest)
         name = request.cookies.get('Name')
         response = make_response(
