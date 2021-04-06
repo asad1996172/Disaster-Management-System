@@ -6,6 +6,42 @@ app = Flask(__name__)
 json_header = 'application/JSON'
 api_header = 'application/x-www-form-urlencoded'
 
+@app.route('/fulfill_donation', methods=['POST'])
+def fulfill_donation():
+    if request.method == 'POST':
+        headers = request.headers
+        if headers.get('Content-Type') == json_header:
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+
+        #data_payload = {
+        #    'event_'
+        #}
+
+        items = form['items']
+        items = items.strip('[')
+        items = items.strip(']')
+        items = items.split(',')
+        print(items)
+        print(form)
+        for item in items:
+            item = item.strip()
+            item = item.strip("'")
+            #item = str(item)
+            print(item)
+            try:
+                quantity = form[item]
+            except Exception as e:
+                print(e)
+            print(item)
+            #quantity = form[item]
+            #data_payload['items'].append(item + ":" + str(quantity))
+        
+
+        response = make_response(redirect('/dashboard'))
+        return response
 
 @app.route('/request_resources', methods=['POST'])
 def request_resources():

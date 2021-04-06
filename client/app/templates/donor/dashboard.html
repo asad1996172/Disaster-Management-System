@@ -194,7 +194,7 @@
                                                 <span aria-hidden="true">×</span>
                                             </button>
                                         </div>
-                                        <form action="/request_resources" method="post">
+                                        <form action="/fulfill_donation" method="post">
                                             <div class="modal-body">
                                                 <input class="form-control form-control-user" id="event_name" name="event_name" value="{{ donationRequest['event_name'] }}" style="display: none;" >
                                                 <input class="form-control form-control-user" id="items" name="items" value="{{ donationRequest['item_quantities'] }}" style="display: none;" >
@@ -202,7 +202,7 @@
                                                 Event Name: {{ donationRequest['event_name'] }}<br>
                                                 {% if donationRequest['item_quantities'] %}
                                                     {% for item_quantity in donationRequest['item_quantities'] %}
-                                                        {{ item_quantity }}: <input type="checkbox" class="form-control form-control-user" id="{{ item_quantity }}" name="{{ item_quantity }}" required> <br>
+                                                        {{ item_quantity }}: <input type="checkbox" class="form-control form-control-user" id="{{ item_quantity }}" name="{{ item_quantity }}" > <br>
                                                     {% endfor %}
                                                  {% else %}
                                                     <h6 class="m-6">No Items Required</h6>
