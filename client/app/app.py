@@ -275,9 +275,16 @@ def donor_dashboard(token):
             donationRequest['event_name'] = donationRequest['event_name'].split(', ')
             donationRequest['item_quantities'] = donationRequest['item_quantities'].split('|')
             parsed_requests.append(donationRequest)
+        events = json.loads(res.text)['events']
+        parsed_events = []
+        for event in events:
+            event['item_names'] = event['items'].split(', ')
+            event['event_date'] = event['event_date'].split('T')[0]
+            parsed_events.append(event)
+
         name = request.cookies.get('Name')
         response = make_response(
-            render_template('donor/dashboard.html', name=name, donationRequests=parsed_requests))
+            render_template('donor/dashboard.html', name=name, donationRequests=parsed_requests, events=parsed_events))
         response.set_cookie('JWT', token)
         return response
     else:
