@@ -7,6 +7,55 @@ json_header = 'application/JSON'
 api_header = 'application/x-www-form-urlencoded'
 
 
+@app.route('/make_donation', methods=['POST'])
+def make_donation():
+    if request.method == 'POST':
+        headers = request.headers
+        if headers.get('Content-Type') == json_header:
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+
+        data_payload = {
+            'event_name': form['event_name'],
+            'donor_email': request.cookies.get('Email'),
+            'recipient_email': form['recipient_email'],
+            'items': []
+        }
+
+        items = form['items_quantities']
+        
+        for item in items.split('|'):
+            try:
+                item = item.strip().split(':')
+            
+                item_name = item[0].strip()
+                item_required_quantity = item[1].strip()
+                give_quantity = form[item_name]
+                
+                data_payload['items'].append(
+                    item_name + ":" + str(int(item_required_quantity) - int(give_quantity)))
+            except Exception as e:
+                print(e)
+        
+        data_payload['items'] = '|'.join(data_payload['items'])
+        print(data_payload)
+        token = request.cookies.get('JWT')
+        res = requests.post(
+            'http://localhost:5000/api/v1/make_donation',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
+        
+        response = make_response(redirect('/dashboard'))
+        response.set_cookie('message', message)
+        return response
+
 @app.route('/request_resources', methods=['POST'])
 def request_resources():
     if request.method == 'POST':
@@ -40,12 +89,9 @@ def request_resources():
             data=data_payload
         )
         message = json.loads(res.text)['message']
-        
-        # TODO: Add message for dashboard
-        # TODO: Catch other paths
 
-        message="Request Submitted Successfully !"
         response = make_response(redirect('/dashboard'))
+        response.set_cookie('message', message)
         return response
         
 
@@ -223,7 +269,7 @@ def admin_dashboard(token):
         response.set_cookie('message', message)
         return response
 
-def donor_dashboard(token):
+def donor_dashboard(token, display_message=""):
     res = requests.get(
         'http://localhost:5000/api/v1/donor',
         headers={
@@ -234,8 +280,18 @@ def donor_dashboard(token):
     message = json.loads(res.text)['message']
     if message == "Welcome to Donor Page!":
         name = request.cookies.get('Name')
+
+        donation_requests = json.loads(res.text)['requests']
+        parsed_requests = []
+        for don_request in donation_requests:
+            don_request['raw_item_quantities'] = don_request['item_quantities']
+            don_request['item_quantities'] = don_request['item_quantities'].split('|')
+            don_request['item_quantities'] = [
+                item_quan.split(':') for item_quan in don_request['item_quantities'] if int(item_quan.split(':')[1]) > 0]
+            parsed_requests.append(don_request)
+
         response = make_response(
-            render_template('donor/dashboard.html', name=name))
+            render_template('donor/dashboard.html', name=name, donation_requests=parsed_requests, message=display_message))
         response.set_cookie('JWT', token)
         return response
     else:
@@ -244,7 +300,8 @@ def donor_dashboard(token):
         response.set_cookie('message', message)
         return response
 
-def recipient_dashboard(token):
+
+def recipient_dashboard(token, display_message=""):
     res = requests.get(
         'http://localhost:5000/api/v1/recipient',
         headers={
@@ -262,7 +319,7 @@ def recipient_dashboard(token):
             parsed_events.append(event)
         name = request.cookies.get('Name')
         response = make_response(
-            render_template('recipient/dashboard.html', name=name, events=parsed_events))
+            render_template('recipient/dashboard.html', name=name, events=parsed_events, message=display_message))
         response.set_cookie('JWT', token)
         return response
     else:
@@ -275,7 +332,10 @@ def recipient_dashboard(token):
 def dashboard():
     if request.method == 'GET':
         token = request.cookies.get('JWT')
-
+        if 'message' in request.cookies:
+            message = request.cookies.get('message')
+        else:
+            message = ""
         if token == '':
             response = make_response(redirect('/'))
             response.set_cookie('JWT', '')
@@ -285,9 +345,9 @@ def dashboard():
         if role == 'admin':  
             return admin_dashboard(token)
         elif role == 'donor':
-            return donor_dashboard(token)
+            return donor_dashboard(token, message)
         elif role == 'recipient':
-            return recipient_dashboard(token)
+            return recipient_dashboard(token, message)
 
 @app.route('/')
 def dams_homepage():
