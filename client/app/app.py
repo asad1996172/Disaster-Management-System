@@ -53,7 +53,7 @@ def make_donation():
         message = json.loads(res.text)['message']
         
         response = make_response(redirect('/dashboard'))
-        response.set_cookie('message', message)
+        response.set_cookie('message_donor', message)
         return response
 
 @app.route('/request_resources', methods=['POST'])
@@ -91,7 +91,7 @@ def request_resources():
         message = json.loads(res.text)['message']
 
         response = make_response(redirect('/dashboard'))
-        response.set_cookie('message', message)
+        response.set_cookie('message_recipient', message)
         return response
         
 
@@ -332,10 +332,7 @@ def recipient_dashboard(token, display_message=""):
 def dashboard():
     if request.method == 'GET':
         token = request.cookies.get('JWT')
-        if 'message' in request.cookies:
-            message = request.cookies.get('message')
-        else:
-            message = ""
+        
         if token == '':
             response = make_response(redirect('/'))
             response.set_cookie('JWT', '')
@@ -345,8 +342,16 @@ def dashboard():
         if role == 'admin':  
             return admin_dashboard(token)
         elif role == 'donor':
+            if 'message_donor' in request.cookies:
+                message = request.cookies.get('message_donor')
+            else:
+                message=""
             return donor_dashboard(token, message)
         elif role == 'recipient':
+            if 'message_recipient' in request.cookies:
+                message = request.cookies.get('message_recipient')
+            else:
+                message = ""
             return recipient_dashboard(token, message)
 
 @app.route('/')
