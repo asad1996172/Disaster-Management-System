@@ -41,4 +41,4 @@ To enable administrator acces in VScode for Windows run ```Set-ExecutionPolicy U
 
 ## Demo
 
-[![Everything Is AWESOME](https://www.youtube.com/watch?v=f7nf1Hh8XgY&ab_channel=AsadMahmood)](https://www.youtube.com/watch?v=f7nf1Hh8XgY&ab_channel=AsadMahmood "Everything Is AWESOME")
+[![Demo](https://www.youtube.com/watch?v=f7nf1Hh8XgY&ab_channel=AsadMahmood)](https://www.youtube.com/watch?v=f7nf1Hh8XgY&ab_channel=AsadMahmood "Demo")
