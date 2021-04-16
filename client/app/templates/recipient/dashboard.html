@@ -48,9 +48,6 @@
                     <span>Dashboard</span></a>
             </li>
             
-
-            
-
         </ul>
         <!-- End of Sidebar -->
 
@@ -209,7 +206,7 @@
                                                     Severity: {{ event['severity'] }}<br>
                                                     {% if event['item_names'] %}
                                                         {% for item_name in event['item_names'] %}
-                                                            {{ item_name }}: <input type="number" class="form-control form-control-user" id="{{ item_name }}" name="{{ item_name }}" required> <br>
+                                                            {{ item_name }}: <input type="number" class="form-control form-control-user" id="{{ item_name }}" name="{{ item_name }}" min="0" required> <br>
                                                         {% endfor %}
                                                      {% else %}
                                                         <h6 class="m-6">No Items Required</h6>
@@ -239,7 +236,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                        <span>Copyright &copy; DAMS 2021</span>
                     </div>
                 </div>
             </footer>
