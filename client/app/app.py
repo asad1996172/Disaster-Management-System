@@ -7,6 +7,44 @@ json_header = 'application/JSON'
 api_header = 'application/x-www-form-urlencoded'
 
 
+@app.route('/pledge', methods=['POST', 'GET'])
+def pledge():
+    if request.method == 'GET':
+        return render_template('donor/pledge.html')
+    elif request.method == 'POST':
+        headers = request.headers
+        form = request.form
+        if headers.get('Content-Type') == json_header:
+            items = form['items']
+            amounts = form['amounts']
+        else:
+            items = form.getlist('mytext[]')
+            amounts = form.getlist('amounts[]')
+
+        pledge=[]
+        for item, amount in zip(items, amounts):
+            pledge.append(item+":"+amount)
+        pledge = '|'.join(pledge)
+        data_payload = {
+            'email': request.cookies.get('Email'),
+            'item_quantities': pledge
+        }
+        
+        token = request.cookies.get('JWT')
+        res = requests.post(
+            'http://localhost:5000/api/v1/pledge_resources',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
+
+        response = make_response(redirect('/dashboard'))
+        response.set_cookie('message_donor', message)
+        return response
+
 @app.route('/make_donation', methods=['POST'])
 def make_donation():
     if request.method == 'POST':
@@ -92,8 +130,7 @@ def request_resources():
 
         response = make_response(redirect('/dashboard'))
         response.set_cookie('message_recipient', message)
-        return response
-        
+        return response    
 
 @app.route('/create_event', methods=['POST', 'GET'])
 def create_event():
@@ -149,6 +186,7 @@ def create_event():
             response.set_cookie('JWT', '')
             response.set_cookie('message', message)
             return response
+
 @app.route('/logout', methods=['POST', 'GET'])
 def logout():
     if request.method == 'GET':
@@ -269,18 +307,106 @@ def admin_dashboard(token):
         response.set_cookie('message', message)
         return response
 
+def update_pledges(token):
+    pledges = requests.get(
+        'http://localhost:5000/api/v1/get_pledges',
+        headers={
+            'x-auth-token': token
+        }
+    )
+    pledges = json.loads(pledges.text)['pledges']
+
+    res = requests.get(
+        'http://localhost:5000/api/v1/donor',
+        headers={
+            'x-auth-token': token
+        }
+    )
+
+    donation_requests = json.loads(res.text)['requests']
+    for don_request in donation_requests:
+        print(don_request)
+        don_request['item_quantities'] = don_request['item_quantities'].split('|')
+        don_request['item_quantities'] = [
+            tuple(item_quan.split(':')) for item_quan in don_request['item_quantities']]
+        don_request['item_quantities'] = dict(don_request['item_quantities'])
+        for pledge in pledges:
+            pledge['item_quantities'] = pledge['item_quantities'].split(
+                '|')
+            pledge['item_quantities'] = [
+                tuple(item_quan.split(':')) for item_quan in pledge['item_quantities']]
+            try:
+                pledge['item_quantities'] = dict(
+                    pledge['item_quantities'])
+            except Exception as e:
+                continue
+            
+            updated=False
+            for item in don_request['item_quantities']:
+                if (item in pledge['item_quantities']) and (int(pledge['item_quantities'][item]) > 0) and (int(don_request['item_quantities'][item]) > 0):
+                    updated=True
+                    don_amount = int(don_request['item_quantities'][item])
+                    pledge_amount = int(pledge['item_quantities'][item])
+                    
+                    don_request['item_quantities'][item] = str(
+                        don_amount - pledge_amount)
+                    
+                    pledge['item_quantities'][item] = str(
+                        pledge_amount - don_amount)
+            if updated:
+                new_pledge_item_quan = []
+                for item in pledge['item_quantities']:
+                    if int(pledge['item_quantities'][item]) > 0:
+                        new_pledge_item_quan.append(
+                            item+":"+pledge['item_quantities'][item])
+                new_pledge_item_quan = '|'.join(new_pledge_item_quan)
+                data_payload = {
+                    'id': pledge['id'],
+                    'item_quantities': new_pledge_item_quan
+                }
+                res = requests.post(
+                    'http://localhost:5000/api/v1/update_pledge',
+                    headers={
+                        'Content-Type': api_header,
+                        'x-auth-token': token
+                    },
+                    data=data_payload
+                )
+
+                new_donation_item_quan = []
+                for item in don_request['item_quantities']:
+                    if int(don_request['item_quantities'][item]) > 0:
+                        new_donation_item_quan.append(
+                            item+":"+don_request['item_quantities'][item])
+                new_donation_item_quan = '|'.join(new_donation_item_quan)
+                
+                data_payload = {
+                    'event_name': don_request['event_name'],
+                    'donor_email': request.cookies.get('Email'),
+                    'recipient_email': don_request['email'],
+                    'items': new_donation_item_quan
+                }
+                res = requests.post(
+                    'http://localhost:5000/api/v1/make_donation',
+                    headers={
+                        'Content-Type': api_header,
+                        'x-auth-token': token
+                    },
+                    data=data_payload
+                )
+                update_pledges(token)
+        
 def donor_dashboard(token, display_message=""):
+    update_pledges(token)
     res = requests.get(
         'http://localhost:5000/api/v1/donor',
         headers={
                         'x-auth-token': token
                     }
     )
-
     message = json.loads(res.text)['message']
     if message == "Welcome to Donor Page!":
         name = request.cookies.get('Name')
-
         donation_requests = json.loads(res.text)['requests']
         parsed_requests = []
         for don_request in donation_requests:
@@ -299,7 +425,6 @@ def donor_dashboard(token, display_message=""):
         response.set_cookie('JWT', '')
         response.set_cookie('message', message)
         return response
-
 
 def recipient_dashboard(token, display_message=""):
     res = requests.get(
@@ -368,8 +493,6 @@ def dams_homepage():
     if 'message' in request.cookies:
         response.set_cookie('message', '')
     return response
-
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=5050)

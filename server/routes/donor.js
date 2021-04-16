@@ -1,6 +1,6 @@
 const auth = require('../middleware/auth');
-const Event = require("../models/event");
 const Request = require("../models/request");
+const Pledge = require("../models/pledge");
 const express = require("express");
 
 const router = express.Router();
@@ -32,4 +32,38 @@ router.post("/make_donation", auth(['donor']), async (req, res) => {
     }
 });
 
+router.post("/update_pledge", auth(['donor']), async (req, res) => {
+    const {id, item_quantities}=req.body;
+
+    const alreadyExistsPledge=await Pledge.findOne({where: {id: id}}).catch(
+        (err)=> {
+            console.log("Error: ", err);}
+    );
+
+    if (alreadyExistsPledge) {
+        alreadyExistsPledge.update({
+            item_quantities: item_quantities
+        }).then(function() { 
+            return res.json({message: "Pledge Successfull!"});
+        })
+    }
+});
+
+router.get("/get_pledges", auth(['donor']), async (req, res) => {
+    Pledge.findAll({}, {raw: true}).then(pledges => {
+        console.log(pledges)
+        res.json({pledges: pledges});
+    });
+});
+
+router.post("/pledge_resources", auth(['donor']), async (req, res) => {
+    const {email, item_quantities}=req.body;
+    
+    const newPledge=new Pledge({email, item_quantities});
+    const savedPledge=await newPledge.save().catch((err)=> {
+        console.log("Error: ", err);
+        res.json({error: "Cannot save pledge at the moment!"}); });
+
+    if (savedPledge) res.json({message: "Pledge made successfully"});
+});
 module.exports = router;

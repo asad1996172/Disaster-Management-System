@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>DAMS - Create Event</title>
+    <title>DAMS - Pledge Resources</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url_for('static',filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -37,6 +37,7 @@
                             <span class="input-group-text remove_field" id="basic-addon1"><a style="color: red; font-size: 1.5em;" class="fas fa-trash"></a></span> \
                         </div> \
                         <input type="text" class="form-control form-control-user" placeholder="Item name ..." name="mytext[]" required> \
+                        <input type="number" class="form-control form-control-user" value=0 name="amounts[]" min="0" required> \
                         </div>'); 
                 }
             });
@@ -72,59 +73,14 @@
                             <div class="col-lg-12">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Create Disaster Event</h1>
+                                        <h1 class="h4 text-gray-900 mb-4">Pledge Resources</h1>
                                     </div>
-                                    <form class="user" method="post" action="/create_event">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-user"
-                                                id="event_name" name="event_name"
-                                                placeholder="Enter Event Name..." required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-user"
-                                                id="disaster_type" name="disaster_type"
-                                                placeholder="Enter Disaster Type..." required>
-                                        </div>
-                                        <div class="form-group" style="margin-left: 5px;">
-                                            <strong>Severity</strong>
-                                            <div class="py-1">
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="severity"
-                                                        id="inlineRadio1" value="mild">
-                                                    <label class="form-check-label" for="inlineRadio1">Mild</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="severity"
-                                                        id="inlineRadio2" value="medium">
-                                                    <label class="form-check-label" for="inlineRadio2">Medium</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="severity"
-                                                        id="inlineRadio2" value="extreme">
-                                                    <label class="form-check-label" for="inlineRadio2">Extreme</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" class="form-control form-control-user"
-                                                    id="location" name="location"
-                                                    placeholder="Enter Location ..." required>
-                                            </div>
-                                        <div class="form-group">
-                                            <input type="number" class="form-control form-control-user"
-                                                id="zipcode" name="zipcode"
-                                                placeholder="Enter Zipcode ..." required>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="date" class="form-control form-control-user"
-                                                id="event_date" name="event_date"
-                                                placeholder="Enter Event Date ..." required>
-                                        </div>
+                                    <form class="user" method="post" action="/pledge">
                                         <div class="form-group input_fields_wrap">
                                             <button class="btn btn-primary btn-user btn-block add_field_button" style="margin-bottom: 10px;">Add Items</button>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-user btn-block">
-                                            Create Event
+                                            Pledge Resources
                                         </button>
                                         <hr>
                                         <a href="/dashboard" class="btn btn-google btn-user btn-block">
