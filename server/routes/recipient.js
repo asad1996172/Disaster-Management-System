@@ -13,6 +13,7 @@ router.get("/recipient", auth(['recipient']), async (req, res) => {
     });
 });
 
+
 router.post("/request_resources", auth(['recipient']), async (req, res) => {
     const {event_name, email, item_quantities}=req.body;
 
