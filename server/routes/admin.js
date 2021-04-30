@@ -38,7 +38,35 @@ router.post("/create_event", auth(['admin']), async (req, res)=> {
     if (savedEvent) res.json({message: "Event Created!"}); })
 
 
-// @route   POST /delete_event
+// @route   POST /expire_event
+// @desc    Expire event
+// @access  Admin
+router.post("/expire_event", auth(['admin']), async (req, res)=> {
+    const { event_name }=req.body;
+
+    let updateValues = { expired: true };
+        Event.update(updateValues, { where: { event_name: event_name } }).then((result) => {
+            // here your result is simply an array with number of affected rows
+            console.log(result);
+            return res.json({message: "Event Expired Successfully!"});
+            // [ 1 ]
+    });
+
+})
+
+// @route   GET /get_event
+// @desc    Get event
+// @access  Admin
+router.get("/get_event", auth(['admin']), async (req, res)=> {
+    const { event_name }=req.body;
+    const alreadyExistsEvent=await Event.findOne({where: {event_name}})
+    if (alreadyExistsEvent) {
+        return res.json({message: "Event deleted successfully", event_details: alreadyExistsEvent});
+    }
+    return res.json({message: "Event doesnot exist"});
+})
+
+    // @route   POST /delete_event
 // @desc    Delete event
 // @access  Public
 router.post("/delete_event", async (req, res)=> {
