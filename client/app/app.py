@@ -7,6 +7,50 @@ json_header = 'application/JSON'
 api_header = 'application/x-www-form-urlencoded'
 
 
+@app.route('/edit_event/<event_name>', methods=['GET'])
+def edit_event(event_name):
+    if request.method == 'GET':
+        
+        data_payload = {
+            'event_name': event_name
+        }
+        token = request.cookies.get('JWT')
+        res = requests.get(
+            'http://localhost:5000/api/v1/get_event',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
+        event_details = json.loads(res.text)['event_details']
+        print(event_details)
+        
+        response = make_response(redirect('/dashboard'))
+        return response
+
+@app.route('/expire_event/<event_name>', methods=['GET'])
+def expire_event(event_name):
+    if request.method == 'GET':
+        
+        data_payload = {
+            'event_name': event_name
+        }
+        token = request.cookies.get('JWT')
+        res = requests.post(
+            'http://localhost:5000/api/v1/expire_event',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
+        response = make_response(redirect('/dashboard'))
+        return response
+
+
 @app.route('/pledge', methods=['POST', 'GET'])
 def pledge():
     if request.method == 'GET':

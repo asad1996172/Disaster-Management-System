@@ -27,6 +27,10 @@ const Event = sequelize.define("Event", {
   },
   items: {
     type: DataTypes.STRING
+  },
+  expired: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 });
 
