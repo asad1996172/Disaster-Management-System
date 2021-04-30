@@ -492,7 +492,7 @@ def update_pledges(token):
                 update_pledges(token)
         
 def donor_dashboard(token, display_message=""):
-    update_pledges(token)
+    # update_pledges(token)
     res = requests.get(
         'http://localhost:5000/api/v1/donor',
         headers={
