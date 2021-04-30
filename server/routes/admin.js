@@ -38,7 +38,31 @@ router.post("/create_event", auth(['admin']), async (req, res)=> {
     if (savedEvent) res.json({message: "Event Created!"}); })
 
 
-// @route   POST /expire_event
+// @route   POST /edit_event
+// @desc    Edit event
+// @access  Admin
+router.post("/edit_event", auth(['admin']), async (req, res)=> {
+    const { event_name, disaster_type, severity, location, event_date, zipcode, items }=req.body;
+
+    let updateValues = { 
+        event_name: event_name,
+        disaster_type: disaster_type,
+        severity: severity,
+        location: location,
+        event_date: event_date,
+        zipcode: zipcode,
+        items: items
+    };
+        Event.update(updateValues, { where: { event_name: event_name } }).then((result) => {
+            // here your result is simply an array with number of affected rows
+            console.log(result);
+            return res.json({message: "Event Expired Successfully!"});
+            // [ 1 ]
+    });
+
+})
+
+    // @route   POST /expire_event
 // @desc    Expire event
 // @access  Admin
 router.post("/expire_event", auth(['admin']), async (req, res)=> {

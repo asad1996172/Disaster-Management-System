@@ -7,10 +7,9 @@ json_header = 'application/JSON'
 api_header = 'application/x-www-form-urlencoded'
 
 
-@app.route('/edit_event/<event_name>', methods=['GET'])
+@app.route('/edit_event/<event_name>', methods=['GET', 'POST'])
 def edit_event(event_name):
     if request.method == 'GET':
-        
         data_payload = {
             'event_name': event_name
         }
@@ -25,7 +24,60 @@ def edit_event(event_name):
         )
         message = json.loads(res.text)['message']
         event_details = json.loads(res.text)['event_details']
+        event_details['event_date'] = event_details['event_date'].split('T')[0]
+        event_details['existing_items'] = ''
+        for item in event_details['items'].split(', '):
+            event_details['existing_items'] += '<div class="input-group mb-3"> \
+                        <div class="input-group-prepend"> \
+                            <span class="input-group-text remove_field" id="basic-addon1"><a style="color: red; font-size: 1.5em;" class="fas fa-trash"></a></span> \
+                        </div> \
+                        <input type="text" class="form-control form-control-user" placeholder="Item name ..." name="mytext[]" value="'+item+'" required> \
+                        </div>'
         print(event_details)
+        
+        response = make_response(render_template(
+            'admin/edit_event.html', event=event_details))
+        return response
+
+    if request.method == 'POST':
+        headers = request.headers
+        if headers.get('Content-Type') == json_header:
+            data_string = request.get_data()
+            form = json.loads(data_string)
+        else:
+            form = request.form
+
+        event_name = form['event_name']
+        disaster_type = form['disaster_type']
+        severity = form['severity']
+        location = form['location']
+        zipcode = form['zipcode']
+        event_date = form['event_date']
+        if headers.get('Content-Type') == json_header:
+            items = form['items']
+        else:
+            items = form.getlist('mytext[]')
+            items = ', '.join(items)
+
+        data_payload = {
+            'event_name': event_name,
+            'disaster_type': disaster_type,
+            'severity': severity,
+            'location': location,
+            'event_date': str(event_date),
+            'zipcode': zipcode,
+            'items': items
+        }
+        token = request.cookies.get('JWT')
+        res = requests.post(
+            'http://localhost:5000/api/v1/edit_event',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+        message = json.loads(res.text)['message']
         
         response = make_response(redirect('/dashboard'))
         return response
@@ -49,7 +101,6 @@ def expire_event(event_name):
         message = json.loads(res.text)['message']
         response = make_response(redirect('/dashboard'))
         return response
-
 
 @app.route('/pledge', methods=['POST', 'GET'])
 def pledge():
