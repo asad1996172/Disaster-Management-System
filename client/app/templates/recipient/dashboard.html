@@ -160,11 +160,19 @@
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3 list-inline m-0">
                                         <span class="m-0 font-weight-bold text-primary"> Event Name: </span> {{ event['event_name'] }}</span>
-                                        <span class="m-0 font-weight-bold text-primary float-right"> 
-                                            <a class="btn btn-primary btn-user btn-block" href="#" data-toggle="modal" data-target="#resources{{ loop.index }}">
-                                            Request Resources
-                                            </a> 
-                                        </span>
+                                        {% if event['expired'] %}
+                                            <span class="m-0 font-weight-bold text-primary float-right"> 
+                                                <button class="btn btn-warning btn-user btn-block" disabled>
+                                                Event Expired
+                                                </button> 
+                                            </span>
+                                        {% else %}
+                                            <span class="m-0 font-weight-bold text-primary float-right"> 
+                                                <a class="btn btn-primary btn-user btn-block" href="#" data-toggle="modal" data-target="#resources{{ loop.index }}">
+                                                Request Resources
+                                                </a> 
+                                            </span>
+                                        {% endif %}
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group row">
