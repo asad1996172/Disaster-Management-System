@@ -22,15 +22,20 @@ router.get("/admin", auth(['admin']), async (req, res) => {
 router.post("/create_event", auth(['admin']), async (req, res)=> {
     const {event_name, disaster_type, severity, location, event_date, zipcode, items}=req.body;
 
+    /* istanbul ignore next */
     const alreadyExistsEvent=await Event.findOne({where: {event_name}}).catch(
         (err)=> {
             console.log("Error: ", err);}
     );
 
+
     if (alreadyExistsEvent) {
-        return res.json({message: "Event already exists!"});}
+        /* istanbul ignore next */
+        return res.json({message: "Event already exists!"});
+    }
 
     const newEvent=new Event({event_name, disaster_type, severity, location, event_date, zipcode, items});
+    /* istanbul ignore next */
     const savedEvent=await newEvent.save().catch((err)=> {
         console.log("Error: ", err);
         res.json({error: "Cannot create event at the moment!"}); });
