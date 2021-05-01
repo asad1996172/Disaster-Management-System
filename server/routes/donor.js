@@ -17,6 +17,7 @@ router.get("/donor", auth(['donor', 'admin']), async (req, res) => {
 router.post("/make_donation", auth(['donor', 'admin']), async (req, res) => {
     const {event_name, donor_email, recipient_email, items}=req.body;
 
+    /* istanbul ignore next */
     const alreadyExistsRequest=await Request.findOne({where: {event_name: event_name, email: recipient_email}}).catch(
         (err)=> {
             console.log("Error: ", err);}
@@ -60,6 +61,7 @@ router.post("/pledge_resources", auth(['donor']), async (req, res) => {
     const {email, item_quantities}=req.body;
     
     const newPledge=new Pledge({email, item_quantities});
+    /* istanbul ignore next */
     const savedPledge=await newPledge.save().catch((err)=> {
         console.log("Error: ", err);
         res.json({error: "Cannot save pledge at the moment!"}); });
