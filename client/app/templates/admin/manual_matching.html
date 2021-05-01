@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Admin - Dashboard</title>
+    <title>Admin - Manual Matching</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ url_for('static',filename='vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -164,53 +164,90 @@
                     {% endif %}
                     <div class="container-fluid float-left">
                     <!-- DataTales Example -->
-                        {% if events %}
-                            {% for event in events %}
+                        {% if donation_requests %}
+                            {% for request in donation_requests %}
                                 <div class="card shadow mb-4">
                                     <div class="card-header py-3 list-inline m-0">
-                                        <span class="m-0 font-weight-bold text-primary"> Event Name: </span> {{ event['event_name'] }}</span>
-                                        {% if event['expired'] %}
-                                            <span class="m-0 font-weight-bold text-primary float-right"> 
-                                                <button class="btn btn-warning btn-user btn-block" disabled>
-                                                Event Expired
-                                                </button> 
-                                            </span>
-                                        {% else %}
-                                            <span class="m-0 font-weight-bold text-primary float-right"> 
-                                                <a class="btn btn-danger btn-user btn-block" href="{{ url_for('expire_event', event_name=event['event_name']) }}">
-                                                Expire Event
-                                                </a> 
-                                            </span>
-                                            <span style="margin-right: 5px!important" class="m-0 font-weight-bold text-primary float-right"> 
-                                                <a class="btn btn-primary btn-user btn-block" href="{{ url_for('edit_event', event_name=event['event_name']) }}">
-                                                Edit Event
-                                                </a> 
-                                            </span>
-                                        {% endif %}
+                                        <span class="m-0 font-weight-bold text-primary"> Event Name: </span> {{ request['event_name'] }}</span>
+                                        <span class="m-0 font-weight-bold text-primary float-right"> 
+                                            <a class="btn btn-primary btn-user btn-block" href="#" data-toggle="modal" data-target="#resources{{ loop.index }}">
+                                            Match Donation
+                                            </a> 
+                                        </span>
                                     </div>
                                     <div class="card-body">
                                         <div class="form-group row">
                                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <span class="m-0 font-weight-bold text-primary"> Disaster Type: </span> {{ event['disaster_type'] }}</span><br>
-                                                <span class="m-0 font-weight-bold text-primary"> Severity: </span> {{ event['severity'] }}</span><br>
-                                                <span class="m-0 font-weight-bold text-primary"> Location: </span> {{ event['location'] }}</span>
+                                                <strong>Required Resources </strong><br><br>
+                                                {% for item in request['item_quantities'] %}
+                                                    <span class="m-0 font-weight-bold text-primary"> {{ item[0] }}: </span> {{ item[1] }}</span><br>
+                                                {% endfor %}
                                             </div>
                                             <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <span class="m-0 font-weight-bold text-primary"> Event Date: </span> {{ event['event_date'] }}</span><br>
-                                                <span class="m-0 font-weight-bold text-primary"> Zipcode: </span> {{ event['zipcode'] }}</span><br>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                                <span class="m-0 font-weight-bold text-primary"> Items Required: </span> {{ event['items'] }}</span>
+                                                
                                             </div>
                                         </div>
                                     </div>
                                     
                                 </div>
+                                <!-- Make Donation Modal-->
+                                <div class="modal fade" id="resources{{ loop.index }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Match Request with Donations</h5>
+                                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <form action="/make_donation" method="post">
+                                                <div class="modal-body">
+                                                    <input class="form-control form-control-user" id="event_name" name="event_name" value="{{ request['event_name'] }}" style="display: none;" >
+                                                    <input class="form-control form-control-user" id="recipient_email" name="recipient_email" value="{{ request['email'] }}" style="display: none;" >
+                                                    <input class="form-control form-control-user" id="items" name="items_quantities" value="{{ request['raw_item_quantities'] }}" style="display: none;" >
+                                                    <input class="form-control form-control-user" id="req_id" name="req_id" value="{{ request['id'] }}" style="display: none;" >
+                                                    
+                                                    <div class="container-fluid float-left">
+                                                    <!-- DataTales Example -->
+                                                        {% if pledges %}
+                                                            {% for pledge in pledges %}
+                                                                <div class="card shadow mb-4">
+                                                                    <div class="card-header py-3 list-inline m-0">
+                                                                        <span class="m-0 font-weight-bold text-primary"> 
+                                                                            <a class="btn btn-primary btn-user btn-block" href="{{ url_for('match', req_id=request['id'], don_id=pledge['id']) }}">
+                                                                            Match
+                                                                            </a> 
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <div class="form-group row">
+                                                                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                                                                <strong>Resources Donated</strong><br><br>
+                                                                                {% for item in pledge['item_quantities'] %}
+                                                                                    <span class="m-0 font-weight-bold text-primary"> {{ item[0] }}: </span> {{ item[1] }}</span><br>
+                                                                                {% endfor %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                            {% endfor %}
+                                                        {% else %}
+                                                            <h6 class="m-6">No Requests Exist in Database</h6>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% else %}
-                            <h6 class="m-6">No Events Exist in Database</h6>
+                            <h6 class="m-6">No Requests Exist in Database</h6>
                         {% endif %}
                     </div>
 

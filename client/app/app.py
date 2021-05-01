@@ -6,6 +6,157 @@ app = Flask(__name__)
 json_header = 'application/JSON'
 api_header = 'application/x-www-form-urlencoded'
 
+def updating_matching(req_id, don_id):
+    token = request.cookies.get('JWT')
+    pledges = requests.get(
+        'http://localhost:5000/api/v1/get_pledges',
+        headers={
+            'x-auth-token': token
+        }
+    )
+    pledges = json.loads(pledges.text)['pledges']
+
+    res = requests.get(
+        'http://localhost:5000/api/v1/donor',
+        headers={
+            'x-auth-token': token
+        }
+    )
+
+    donation_requests = json.loads(res.text)['requests']
+    req_request = None
+    for don_request in donation_requests:
+        if int(don_request['id']) == int(req_id):
+            don_request['item_quantities'] = don_request['item_quantities'].split(
+                '|')
+            don_request['item_quantities'] = [
+                tuple(item_quan.split(':')) for item_quan in don_request['item_quantities']]
+            don_request['item_quantities'] = dict(don_request['item_quantities'])
+            req_request = don_request
+        
+    req_pledge = None    
+    for pledge in pledges:
+        if int(pledge['id']) == int(don_id):
+            pledge['item_quantities'] = pledge['item_quantities'].split(
+                '|')
+            pledge['item_quantities'] = [
+                tuple(item_quan.split(':')) for item_quan in pledge['item_quantities']]
+            try:
+                pledge['item_quantities'] = dict(
+                    pledge['item_quantities'])
+            except Exception as e:
+                continue
+            req_pledge = pledge
+
+    print('Request Data: ', req_request)
+    print('Pledge Data: ', req_pledge)
+    don_request = req_request
+    pledge = req_pledge
+    
+    updated = False
+    for item in don_request['item_quantities']:
+        if (item in pledge['item_quantities']) and (int(pledge['item_quantities'][item]) > 0) and (int(don_request['item_quantities'][item]) > 0):
+            updated = True
+            don_amount = int(don_request['item_quantities'][item])
+            pledge_amount = int(pledge['item_quantities'][item])
+
+            don_request['item_quantities'][item] = str(
+                don_amount - pledge_amount)
+
+            pledge['item_quantities'][item] = str(
+                pledge_amount - don_amount)
+    if updated:
+        new_pledge_item_quan = []
+        for item in pledge['item_quantities']:
+            if int(pledge['item_quantities'][item]) > 0:
+                new_pledge_item_quan.append(
+                    item+":"+pledge['item_quantities'][item])
+        new_pledge_item_quan = '|'.join(new_pledge_item_quan)
+        data_payload = {
+            'id': pledge['id'],
+            'item_quantities': new_pledge_item_quan
+        }
+        res = requests.post(
+            'http://localhost:5000/api/v1/update_pledge',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+
+        new_donation_item_quan = []
+        for item in don_request['item_quantities']:
+            if int(don_request['item_quantities'][item]) > 0:
+                new_donation_item_quan.append(
+                    item+":"+don_request['item_quantities'][item])
+        new_donation_item_quan = '|'.join(new_donation_item_quan)
+
+        data_payload = {
+            'event_name': don_request['event_name'],
+            'donor_email': request.cookies.get('Email'),
+            'recipient_email': don_request['email'],
+            'items': new_donation_item_quan
+        }
+        res = requests.post(
+            'http://localhost:5000/api/v1/make_donation',
+            headers={
+                'Content-Type': api_header,
+                'x-auth-token': token
+            },
+            data=data_payload
+        )
+
+@app.route('/match/<req_id>/<don_id>', methods=['GET', 'POST'])
+def match(req_id, don_id):
+    updating_matching(req_id, don_id)
+    response = make_response(redirect('/manual_matching'))
+    return response
+
+@app.route('/manual_matching', methods=['GET', 'POST'])
+def manual_matching():
+    if request.method == 'GET':
+        token = request.cookies.get('JWT')
+        res = requests.get(
+            'http://localhost:5000/api/v1/donor',
+            headers={
+                'x-auth-token': token
+            }
+        )
+
+        pledges = requests.get(
+            'http://localhost:5000/api/v1/get_pledges',
+            headers={
+                'x-auth-token': token
+            }
+        )
+        pledges = json.loads(pledges.text)['pledges']
+        parsed_pledges = []
+        for pledge in pledges:
+            pledge['raw_item_quantities'] = pledge['item_quantities']
+            pledge['item_quantities'] = pledge['item_quantities'].split('|')
+            pledge['item_quantities'] = [
+                item_quan.split(':') for item_quan in pledge['item_quantities'] if int(item_quan.split(':')[1]) > 0]
+            parsed_pledges.append(pledge)
+
+        message = json.loads(res.text)['message']
+        if message == "Welcome to Donor Page!":
+            name = request.cookies.get('Name')
+            donation_requests = json.loads(res.text)['requests']
+            parsed_requests = []
+            for don_request in donation_requests:
+                if don_request['item_quantities'] != '':
+                    don_request['raw_item_quantities'] = don_request['item_quantities']
+                    don_request['item_quantities'] = don_request['item_quantities'].split(
+                        '|')
+                    print(don_request['item_quantities'])
+                    don_request['item_quantities'] = [
+                        item_quan.split(':') for item_quan in don_request['item_quantities'] if int(item_quan.split(':')[1]) > 0]
+                    parsed_requests.append(don_request)
+
+            response = make_response(render_template(
+                'admin/manual_matching.html', name=name, donation_requests=parsed_requests, pledges=parsed_pledges))
+            return response
 
 @app.route('/edit_event/<event_name>', methods=['GET', 'POST'])
 def edit_event(event_name):
@@ -505,11 +656,12 @@ def donor_dashboard(token, display_message=""):
         donation_requests = json.loads(res.text)['requests']
         parsed_requests = []
         for don_request in donation_requests:
-            don_request['raw_item_quantities'] = don_request['item_quantities']
-            don_request['item_quantities'] = don_request['item_quantities'].split('|')
-            don_request['item_quantities'] = [
-                item_quan.split(':') for item_quan in don_request['item_quantities'] if int(item_quan.split(':')[1]) > 0]
-            parsed_requests.append(don_request)
+            if don_request['item_quantities'] != '':
+                don_request['raw_item_quantities'] = don_request['item_quantities']
+                don_request['item_quantities'] = don_request['item_quantities'].split('|')
+                don_request['item_quantities'] = [
+                    item_quan.split(':') for item_quan in don_request['item_quantities'] if int(item_quan.split(':')[1]) > 0]
+                parsed_requests.append(don_request)
 
         response = make_response(
             render_template('donor/dashboard.html', name=name, donation_requests=parsed_requests, message=display_message))

@@ -5,7 +5,7 @@ const express = require("express");
 
 const router = express.Router();
 
-router.get("/donor", auth(['donor']), async (req, res) => {
+router.get("/donor", auth(['donor', 'admin']), async (req, res) => {
     
     Request.findAll({}, {raw: true}).then(requests => {
         // events will be an array of all Event instances
@@ -14,7 +14,7 @@ router.get("/donor", auth(['donor']), async (req, res) => {
     });
 });
 
-router.post("/make_donation", auth(['donor']), async (req, res) => {
+router.post("/make_donation", auth(['donor', 'admin']), async (req, res) => {
     const {event_name, donor_email, recipient_email, items}=req.body;
 
     const alreadyExistsRequest=await Request.findOne({where: {event_name: event_name, email: recipient_email}}).catch(
@@ -32,7 +32,7 @@ router.post("/make_donation", auth(['donor']), async (req, res) => {
     }
 });
 
-router.post("/update_pledge", auth(['donor']), async (req, res) => {
+router.post("/update_pledge", auth(['donor', 'admin']), async (req, res) => {
     const {id, item_quantities}=req.body;
 
     const alreadyExistsPledge=await Pledge.findOne({where: {id: id}}).catch(
@@ -49,7 +49,7 @@ router.post("/update_pledge", auth(['donor']), async (req, res) => {
     }
 });
 
-router.get("/get_pledges", auth(['donor']), async (req, res) => {
+router.get("/get_pledges", auth(['donor', 'admin']), async (req, res) => {
     Pledge.findAll({}, {raw: true}).then(pledges => {
         console.log(pledges)
         res.json({pledges: pledges});
