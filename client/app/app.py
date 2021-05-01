@@ -133,11 +133,12 @@ def manual_matching():
         pledges = json.loads(pledges.text)['pledges']
         parsed_pledges = []
         for pledge in pledges:
-            pledge['raw_item_quantities'] = pledge['item_quantities']
-            pledge['item_quantities'] = pledge['item_quantities'].split('|')
-            pledge['item_quantities'] = [
-                item_quan.split(':') for item_quan in pledge['item_quantities'] if int(item_quan.split(':')[1]) > 0]
-            parsed_pledges.append(pledge)
+            if pledge['item_quantities'] != '':
+                pledge['raw_item_quantities'] = pledge['item_quantities']
+                pledge['item_quantities'] = pledge['item_quantities'].split('|')
+                pledge['item_quantities'] = [
+                    item_quan.split(':') for item_quan in pledge['item_quantities'] if int(item_quan.split(':')[1]) > 0]
+                parsed_pledges.append(pledge)
 
         message = json.loads(res.text)['message']
         if message == "Welcome to Donor Page!":
